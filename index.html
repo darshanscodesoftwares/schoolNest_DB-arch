@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Schema Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Database Schema Styles */
+        .db-filter-btn {
+            background-color: white;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .db-filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .db-filter-btn.active {
+            background-color: #3B82F6 !important;
+            color: white !important;
+            border-color: #1E40AF !important;
+        }
+        .table-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .table-card:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        .table-card.hidden {
+            display: none;
+        }
+        .table-header {
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        .table-header:hover {
+            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+        }
+        .table-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #6B7280;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        .table-toggle.open {
+            transform: rotate(180deg);
+        }
+        .table-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .table-content.show {
+            max-height: 2000px;
+        }
+        .columns-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .columns-table th {
+            background-color: #F9FAFB;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .columns-table td {
+            padding: 10px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        .columns-table tr:hover {
+            background-color: #F9FAFB;
+        }
+        .col-name {
+            font-family: 'Courier New', monospace;
+            color: #1E40AF;
+            font-weight: 600;
+        }
+        .col-type {
+            font-family: 'Courier New', monospace;
+            color: #059669;
+            font-weight: 500;
+        }
+        .col-constraint {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+        .col-pk { background-color: #FCA5A5; color: #7F1D1D; }
+        .col-fk { background-color: #BFDBFE; color: #1E3A8A; }
+        .col-uk { background-color: #FBBF24; color: #92400E; }
+        .col-nn { background-color: #FEE2E2; color: #991B1B; }
+        .col-idx { background-color: #E9D5FF; color: #581C87; }
+        .service-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+        .service-academic { background-color: #DBEAFE; color: #1E40AF; }
+        .service-billing { background-color: #FEF3C7; color: #78350F; }
+        .service-communication { background-color: #DCFCE7; color: #065F46; }
+        .service-user { background-color: #E9D5FF; color: #581C87; }
+        .service-system { background-color: #F3F4F6; color: #374151; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Section: Database Schema -->
+    <section id="db-schema" class="py-12 bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-3xl font-bold text-gray-900">Database Schema Design</h2>
+                </div>
+                <p class="mt-4 text-gray-600 max-w-3xl">
+                    Complete relational database structure for SchoolNest showing all tables, columns, constraints, and relationships across services.
+                </p>
+            </div>
+
+            <!-- Service Filter Tabs -->
+            <div class="flex flex-wrap gap-2 mb-8">
+                <button onclick="filterDBTables('all')" class="db-filter-btn active px-4 py-2 rounded-lg font-medium transition border-2" data-service="all" style="background-color: #F3F4F6; border-color: #6B7280; color: #1F2937;">All Services</button>
+                <button onclick="filterDBTables('academic')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="academic" style="border-color: #3B82F6; color: #1E40AF;">🎓 Academic</button>
+                <button onclick="filterDBTables('billing')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="billing" style="border-color: #F59E0B; color: #78350F;">💳 Billing</button>
+                <button onclick="filterDBTables('communication')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="communication" style="border-color: #059669; color: #065F46;">💬 Communication</button>
+                <button onclick="filterDBTables('user')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="user" style="border-color: #7C3AED; color: #581C87;">👤 User/Auth</button>
+                <button onclick="filterDBTables('system')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="system" style="border-color: #6B7280; color: #374151;">⚙️ System</button>
+            </div>
+
+            <!-- Tables Container -->
+            <div id="schemaContainer" class="space-y-6">
+                <!-- This will be populated by JavaScript -->
+            </div>
+
+            <!-- Master Entity Relationship Summary -->
+            <div class="mt-10 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">🔗 Master Relationships</h3>
+                <div class="space-y-3 text-sm text-gray-700">
+                    <div class="flex items-start gap-3">
+                        <span class="font-mono font-bold text-blue-600">schools</span>
+                        <span class="text-gray-600">→ Root master table. All data is scoped by school_id for multi-tenancy.</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-mono font-bold text-blue-600">users</span>
+                        <span class="text-gray-600">→ Connects to schools via school_id. Roles via user_roles table (many-to-many).</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-mono font-bold text-purple-600">students</span>
+                        <span class="text-gray-600">→ FK to schools & classes. Each student belongs to one school (tenant isolation via school_id).</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-mono font-bold text-emerald-600">classes</span>
+                        <span class="text-gray-600">→ FK to schools & academic_years. Represents a specific grade/section in a school.</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-mono font-bold text-amber-600">invoices</span>
+                        <span class="text-gray-600">→ FK to students & fee_structures. Every invoice links back to a student (which links to school).</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Database Schema Data
+        const dbSchema = {
+            'schools': {
+                service: 'system',
+                description: 'Master tenant table. Every school is a tenant.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'name', type: 'VARCHAR(255)', constraints: ['NN'] },
+                    { name: 'code', type: 'VARCHAR(50)', constraints: ['UK', 'NN'] },
+                    { name: 'email', type: 'VARCHAR(255)', constraints: [] },
+                    { name: 'phone', type: 'VARCHAR(20)', constraints: [] },
+                    { name: 'address', type: 'TEXT', constraints: [] },
+                    { name: 'city', type: 'VARCHAR(100)', constraints: [] },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' },
+                    { name: 'tenant_id', type: 'BIGINT', constraints: ['UK', 'NN'] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' },
+                    { name: 'updated_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_code', 'idx_is_active', 'idx_tenant_id']
+            },
+            'users': {
+                service: 'user',
+                description: 'User accounts across all schools.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'email', type: 'VARCHAR(255)', constraints: ['NN'] },
+                    { name: 'password_hash', type: 'VARCHAR(255)', constraints: [] },
+                    { name: 'first_name', type: 'VARCHAR(100)', constraints: ['NN'] },
+                    { name: 'last_name', type: 'VARCHAR(100)', constraints: [] },
+                    { name: 'phone', type: 'VARCHAR(20)', constraints: [] },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' },
+                    { name: 'email_verified', type: 'BOOLEAN', constraints: [], default: 'false' },
+                    { name: 'last_login', type: 'TIMESTAMP', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_email', 'idx_is_active'],
+                fks: [{ column: 'school_id', references: 'schools(id)' }]
+            },
+            'roles': {
+                service: 'user',
+                description: 'Role definitions (SUPER_ADMIN, ADMIN, TEACHER, PARENT, etc).',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'name', type: 'VARCHAR(50)', constraints: ['UK', 'NN'] },
+                    { name: 'description', type: 'TEXT', constraints: [] },
+                    { name: 'permissions', type: 'JSON', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_name']
+            },
+            'user_roles': {
+                service: 'user',
+                description: 'Junction table for many-to-many relationship between users and roles.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'user_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'role_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'assigned_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_user_id', 'idx_role_id', 'idx_school_id'],
+                fks: [
+                    { column: 'user_id', references: 'users(id)' },
+                    { column: 'role_id', references: 'roles(id)' },
+                    { column: 'school_id', references: 'schools(id)' }
+                ]
+            },
+            'academic_years': {
+                service: 'academic',
+                description: 'Academic years (2023-2024, 2024-2025, etc).',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'year_start', type: 'INT', constraints: ['NN'] },
+                    { name: 'year_end', type: 'INT', constraints: ['NN'] },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'false' },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_is_active'],
+                fks: [{ column: 'school_id', references: 'schools(id)' }]
+            },
+            'classes': {
+                service: 'academic',
+                description: 'Classes/sections in a school (Class 10A, Class 9B, etc).',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'academic_year_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'name', type: 'VARCHAR(50)', constraints: ['NN'] },
+                    { name: 'grade', type: 'INT', constraints: ['NN'] },
+                    { name: 'section', type: 'VARCHAR(10)', constraints: [] },
+                    { name: 'class_teacher_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'max_strength', type: 'INT', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_academic_year_id', 'idx_class_teacher_id'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'academic_year_id', references: 'academic_years(id)' }
+                ]
+            },
+            'students': {
+                service: 'academic',
+                description: 'Student records with tenant isolation via school_id.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'user_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'class_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'enrollment_number', type: 'VARCHAR(50)', constraints: ['UK', 'NN'] },
+                    { name: 'first_name', type: 'VARCHAR(100)', constraints: ['NN'] },
+                    { name: 'last_name', type: 'VARCHAR(100)', constraints: [] },
+                    { name: 'date_of_birth', type: 'DATE', constraints: [] },
+                    { name: 'gender', type: 'ENUM(M,F,O)', constraints: [] },
+                    { name: 'parent_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_class_id', 'idx_enrollment_number', 'idx_parent_id'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'class_id', references: 'classes(id)' }
+                ]
+            },
+            'attendance': {
+                service: 'academic',
+                description: 'Daily attendance records for students.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'student_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'class_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'date', type: 'DATE', constraints: ['NN'] },
+                    { name: 'status', type: "ENUM('PRESENT','ABSENT','LEAVE')", constraints: ['NN'] },
+                    { name: 'marked_by', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_student_id', 'idx_date'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'student_id', references: 'students(id)' }
+                ],
+                uniqueKey: 'UNIQUE(student_id, date)'
+            },
+            'exam_results': {
+                service: 'academic',
+                description: 'Student exam marks and results.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'student_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'exam_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'subject_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'marks_obtained', type: 'DECIMAL(5,2)', constraints: ['NN'] },
+                    { name: 'total_marks', type: 'DECIMAL(5,2)', constraints: ['NN'] },
+                    { name: 'percentage', type: 'DECIMAL(5,2)', constraints: [] },
+                    { name: 'grade', type: "ENUM('A','B','C','D','F')", constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_student_id', 'idx_exam_id'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'student_id', references: 'students(id)' }
+                ]
+            },
+            'invoices': {
+                service: 'billing',
+                description: 'Student fee invoices for billing.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'student_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'invoice_number', type: 'VARCHAR(50)', constraints: ['UK', 'NN'] },
+                    { name: 'fee_structure_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'amount', type: 'DECIMAL(10,2)', constraints: ['NN'] },
+                    { name: 'due_date', type: 'DATE', constraints: ['NN'] },
+                    { name: 'status', type: "ENUM('DRAFT','SENT','PAID','OVERDUE','CANCELLED')", constraints: ['NN'] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_student_id', 'idx_status', 'idx_due_date'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'student_id', references: 'students(id)' }
+                ]
+            },
+            'payments': {
+                service: 'billing',
+                description: 'Payment records for invoices.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'invoice_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'amount_paid', type: 'DECIMAL(10,2)', constraints: ['NN'] },
+                    { name: 'payment_method', type: "ENUM('CASH','CHEQUE','ONLINE','UPI')", constraints: ['NN'] },
+                    { name: 'transaction_id', type: 'VARCHAR(100)', constraints: [] },
+                    { name: 'payment_date', type: 'DATE', constraints: ['NN'] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_invoice_id', 'idx_payment_date'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'invoice_id', references: 'invoices(id)' }
+                ]
+            },
+            'messages': {
+                service: 'communication',
+                description: 'Messages between users (teachers, parents, admins).',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'sender_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'recipient_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'subject', type: 'VARCHAR(255)', constraints: [] },
+                    { name: 'body', type: 'TEXT', constraints: ['NN'] },
+                    { name: 'is_read', type: 'BOOLEAN', constraints: ['NN'], default: 'false' },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_sender_id', 'idx_recipient_id', 'idx_is_read'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' }
+                ]
+            },
+            'audit_logs': {
+                service: 'system',
+                description: 'Audit trail for compliance and debugging.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'user_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'action', type: 'VARCHAR(255)', constraints: ['NN'] },
+                    { name: 'entity_type', type: 'VARCHAR(100)', constraints: ['NN'] },
+                    { name: 'entity_id', type: 'BIGINT', constraints: ['NN'] },
+                    { name: 'old_values', type: 'JSON', constraints: [] },
+                    { name: 'new_values', type: 'JSON', constraints: [] },
+                    { name: 'ip_address', type: 'VARCHAR(45)', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_user_id', 'idx_entity_type', 'idx_created_at'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' }
+                ]
+            },
+            'pages': {
+                service: 'system',
+                description: 'System pages catalog (Dashboard, Academics, Billing, etc). SchoolNest has 10 core pages.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'name', type: 'VARCHAR(100)', constraints: ['UK', 'NN'] },
+                    { name: 'slug', type: 'VARCHAR(100)', constraints: ['UK', 'NN'] },
+                    { name: 'description', type: 'TEXT', constraints: [] },
+                    { name: 'icon', type: 'VARCHAR(50)', constraints: [] },
+                    { name: 'order', type: 'INT', constraints: [] },
+                    { name: 'is_premium', type: 'BOOLEAN', constraints: ['NN'], default: 'false' },
+                    { name: 'price_monthly', type: 'DECIMAL(10,2)', constraints: [] },
+                    { name: 'service_id', type: 'VARCHAR(50)', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_slug', 'idx_is_premium']
+            },
+            'features': {
+                service: 'system',
+                description: 'Individual features within pages. Each page has 10+ features, 100+ total.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'page_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'name', type: 'VARCHAR(100)', constraints: ['NN'] },
+                    { name: 'slug', type: 'VARCHAR(100)', constraints: ['UK', 'NN'] },
+                    { name: 'description', type: 'TEXT', constraints: [] },
+                    { name: 'is_premium', type: 'BOOLEAN', constraints: ['NN'], default: 'false' },
+                    { name: 'price_monthly', type: 'DECIMAL(10,2)', constraints: [] },
+                    { name: 'requires_feature_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'order', type: 'INT', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_page_id', 'idx_is_premium', 'idx_slug'],
+                fks: [
+                    { column: 'page_id', references: 'pages(id)' }
+                ]
+            },
+            'school_subscriptions': {
+                service: 'system',
+                description: 'What pages and features a school has paid for (licensing). School 01 paid for 7 pages, 60 features.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'page_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'feature_id', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'subscription_type', type: "ENUM('PAGE','FEATURE')", constraints: ['NN'] },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' },
+                    { name: 'paid_amount', type: 'DECIMAL(10,2)', constraints: [] },
+                    { name: 'subscribed_date', type: 'DATE', constraints: ['NN'] },
+                    { name: 'expires_date', type: 'DATE', constraints: [] },
+                    { name: 'is_lifetime', type: 'BOOLEAN', constraints: [], default: 'false' },
+                    { name: 'activated_by', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_is_active', 'idx_expires_date'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'page_id', references: 'pages(id)' },
+                    { column: 'feature_id', references: 'features(id)' }
+                ]
+            },
+            'role_page_permissions': {
+                service: 'system',
+                description: 'School Admin assigns pages to roles. School 01 Admin decides which roles get which pages.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'role_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'page_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'granted_by', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'granted_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' }
+                ],
+                indexes: ['idx_school_id', 'idx_role_id', 'idx_page_id'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'role_id', references: 'roles(id)' },
+                    { column: 'page_id', references: 'pages(id)' }
+                ],
+                uniqueKey: 'UNIQUE(school_id, role_id, page_id)'
+            },
+            'role_feature_permissions': {
+                service: 'system',
+                description: 'School Admin assigns features to roles. Granular control: Assistant 01 gets 20 features, Assistant 02 gets 28.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'role_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'feature_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'granted_by', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'granted_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' }
+                ],
+                indexes: ['idx_school_id', 'idx_role_id', 'idx_feature_id'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'role_id', references: 'roles(id)' },
+                    { column: 'feature_id', references: 'features(id)' }
+                ],
+                uniqueKey: 'UNIQUE(school_id, role_id, feature_id)'
+            },
+            'feature_usage_audit': {
+                service: 'system',
+                description: 'Track when users access features for compliance and usage analytics.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'user_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'feature_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'action', type: 'VARCHAR(100)', constraints: ['NN'] },
+                    { name: 'had_permission', type: 'BOOLEAN', constraints: ['NN'] },
+                    { name: 'ip_address', type: 'VARCHAR(45)', constraints: [] },
+                    { name: 'user_agent', type: 'TEXT', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_user_id', 'idx_feature_id', 'idx_created_at'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'user_id', references: 'users(id)' },
+                    { column: 'feature_id', references: 'features(id)' }
+                ]
+            },
+            'feature_actions': {
+                service: 'system',
+                description: 'School-level: Which CRUD actions are available per feature. School can disable DELETE for safety.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'feature_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'action', type: "ENUM('VIEW','ADD','EDIT','DELETE','ALL')", constraints: ['NN'] },
+                    { name: 'is_enabled', type: 'BOOLEAN', constraints: ['NN'], default: 'true' },
+                    { name: 'description', type: 'VARCHAR(255)', constraints: [] },
+                    { name: 'created_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' }
+                ],
+                indexes: ['idx_school_id', 'idx_feature_id', 'idx_action', 'idx_is_enabled'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'feature_id', references: 'features(id)' }
+                ],
+                uniqueKey: 'UNIQUE(school_id, feature_id, action)'
+            },
+            'role_feature_actions': {
+                service: 'system',
+                description: 'Admin-level: Which actions a role can perform on features. Teacher: VIEW+EDIT attendance, Parent: VIEW only.',
+                columns: [
+                    { name: 'id', type: 'BIGINT', constraints: ['PK'] },
+                    { name: 'school_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'role_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'feature_id', type: 'BIGINT', constraints: ['FK', 'NN'] },
+                    { name: 'action', type: "ENUM('VIEW','ADD','EDIT','DELETE','ALL')", constraints: ['NN'] },
+                    { name: 'granted_by', type: 'BIGINT', constraints: ['FK'] },
+                    { name: 'granted_at', type: 'TIMESTAMP', constraints: [], default: 'CURRENT_TIMESTAMP' },
+                    { name: 'is_active', type: 'BOOLEAN', constraints: ['NN'], default: 'true' }
+                ],
+                indexes: ['idx_school_id', 'idx_role_id', 'idx_feature_id', 'idx_action'],
+                fks: [
+                    { column: 'school_id', references: 'schools(id)' },
+                    { column: 'role_id', references: 'roles(id)' },
+                    { column: 'feature_id', references: 'features(id)' }
+                ],
+                uniqueKey: 'UNIQUE(school_id, role_id, feature_id, action)'
+            }
+        };
+
+        // Database Schema Functions
+        function filterDBTables(service) {
+            const container = document.getElementById('schemaContainer');
+            container.innerHTML = '';
+
+            // Update active button
+            document.querySelectorAll('.db-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-service="${service}"]`).classList.add('active');
+
+            // Generate table cards
+            Object.entries(dbSchema).forEach(([tableName, tableInfo]) => {
+                if (service !== 'all' && tableInfo.service !== service) return;
+
+                const card = createTableCard(tableName, tableInfo);
+                container.appendChild(card);
+            });
+        }
+
+        function createTableCard(tableName, tableInfo) {
+            const card = document.createElement('div');
+            card.className = 'table-card';
+
+            const serviceBadgeColor = {
+                'academic': 'service-academic',
+                'billing': 'service-billing',
+                'communication': 'service-communication',
+                'user': 'service-user',
+                'system': 'service-system'
+            }[tableInfo.service] || 'service-system';
+
+            const header = document.createElement('div');
+            header.className = 'table-header';
+            header.onclick = function() {
+                const content = card.querySelector('.table-content');
+                const toggle = card.querySelector('.table-toggle');
+                content.classList.toggle('show');
+                toggle.classList.toggle('open');
+            };
+
+            header.innerHTML = `
+                <div>
+                    <span class="font-bold text-lg text-gray-900">${tableName}</span>
+                    <span class="service-badge ${serviceBadgeColor}">${tableInfo.service.toUpperCase()}</span>
+                    <p class="text-sm text-gray-600 mt-1">${tableInfo.description}</p>
+                </div>
+                <span class="table-toggle">▼</span>
+            `;
+
+            const content = document.createElement('div');
+            content.className = 'table-content';
+
+            let columnsHTML = '<table class="columns-table"><thead><tr><th>Column</th><th>Data Type</th><th>Constraints</th></tr></thead><tbody>';
+
+            tableInfo.columns.forEach(col => {
+                let constraints = col.constraints.map(c => {
+                    const constraintClass = `col-${c.toLowerCase()}`;
+                    return `<span class="col-constraint ${constraintClass}">${c}</span>`;
+                }).join('');
+
+                if (col.default) {
+                    constraints += ` <span class="text-xs text-gray-500">default: ${col.default}</span>`;
+                }
+
+                columnsHTML += `
+                    <tr>
+                        <td><span class="col-name">${col.name}</span></td>
+                        <td><span class="col-type">${col.type}</span></td>
+                        <td>${constraints}</td>
+                    </tr>
+                `;
+            });
+
+            columnsHTML += '</tbody></table>';
+
+            let relationsHTML = '';
+            if (tableInfo.fks && tableInfo.fks.length > 0) {
+                relationsHTML += '<div class="mt-4"><strong>Foreign Keys:</strong><ul class="mt-2 space-y-1 text-sm">';
+                tableInfo.fks.forEach(fk => {
+                    relationsHTML += `<li>🔗 <span class="font-mono text-blue-600">${fk.column}</span> → <span class="font-mono">${fk.references}</span></li>`;
+                });
+                relationsHTML += '</ul></div>';
+            }
+
+            if (tableInfo.indexes && tableInfo.indexes.length > 0) {
+                relationsHTML += '<div class="mt-4"><strong>Indexes:</strong><ul class="mt-2 space-y-1 text-sm">';
+                tableInfo.indexes.forEach(idx => {
+                    relationsHTML += `<li>⚡ <span class="font-mono text-purple-600">${idx}</span></li>`;
+                });
+                relationsHTML += '</ul></div>';
+            }
+
+            if (tableInfo.uniqueKey) {
+                relationsHTML += `<div class="mt-4"><strong>Unique Constraint:</strong><p class="mt-2 text-sm font-mono text-amber-600">${tableInfo.uniqueKey}</p></div>`;
+            }
+
+            content.innerHTML = `<div class="p-4">${columnsHTML}${relationsHTML}</div>`;
+
+            card.appendChild(header);
+            card.appendChild(content);
+
+            return card;
+        }
+
+        // Initialize database schema on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.getElementById('schemaContainer')) {
+                filterDBTables('all');
+            }
+        });
+    </script>
+</body>
+</html>
