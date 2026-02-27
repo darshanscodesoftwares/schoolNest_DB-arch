@@ -34,6 +34,15 @@
             color: #D1D5DB !important;
         }
 
+        /* Dark mode text colors for role definitions and master relationships */
+        body.dark-mode .text-gray-700 {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode .text-gray-900 {
+            color: #FFFFFF !important;
+        }
+
         body.dark-mode .db-filter-btn {
             background: rgba(31, 41, 55, 0.6);
             color: #E5E7EB;
@@ -161,25 +170,79 @@
             color: #D1D5DB;
         }
 
+        /* Light mode - Role Definition Cards */
+        .bg-white\/60.backdrop-blur-sm {
+            background: rgba(238, 242, 255, 0.95) !important;
+            border-color: rgba(99, 102, 241, 0.3) !important;
+        }
+
+        .bg-white\/60.backdrop-blur-sm .text-indigo-600 {
+            color: #3730A3 !important;
+        }
+
+        .bg-white\/60.backdrop-blur-sm .text-gray-700 {
+            color: #1F2937 !important;
+        }
+
+        .bg-white\/60.backdrop-blur-sm .text-gray-600 {
+            color: #374151 !important;
+        }
+
         /* Dark mode - Role Definitions Cards */
-        body.dark-mode > section:first-of-type > div > div {
-            background: transparent !important;
-            border-color: rgba(255, 255, 255, 0.08) !important;
+        body.dark-mode .bg-white\/60.backdrop-blur-sm {
+            background: rgba(55, 65, 81, 0.8) !important;
+            border-color: rgba(99, 102, 241, 0.5) !important;
         }
 
-        /* Target role definition cards specifically */
-        body.dark-mode [class*="border-l-4"] {
-            background: rgba(99, 102, 241, 0.15) !important;
-            border-color: rgba(99, 102, 241, 0.4) !important;
-            backdrop-filter: blur(10px);
-        }
-
-        body.dark-mode [class*="border-l-4"] div:first-child {
+        body.dark-mode .bg-white\/60.backdrop-blur-sm .text-indigo-600 {
             color: #A5B4FC !important;
         }
 
-        body.dark-mode [class*="border-l-4"] p {
-            color: #D1D5DB !important;
+        body.dark-mode .bg-white\/60.backdrop-blur-sm .text-gray-700 {
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .bg-white\/60.backdrop-blur-sm .text-gray-600 {
+            color: #E5E7EB !important;
+        }
+
+        /* Master Relationships section - Light mode */
+        .bg-gradient-to-r.from-white.via-gray-50.to-white .text-gray-700 {
+            color: #374151 !important;
+        }
+
+        .bg-gradient-to-r.from-white.via-gray-50.to-white .text-gray-600 {
+            color: #4B5563 !important;
+        }
+
+        .bg-gradient-to-r.from-white.via-gray-50.to-white .text-indigo-600 {
+            color: #3730A3 !important;
+        }
+
+        /* Master Relationships section - Dark mode */
+        body.dark-mode .bg-gradient-to-r.from-white.via-gray-50.to-white {
+            background: rgba(55, 65, 81, 0.6) !important;
+            border-color: rgba(99, 102, 241, 0.3) !important;
+        }
+
+        body.dark-mode .bg-gradient-to-r.from-white.via-gray-50.to-white .text-lg.font-bold.text-gray-900 {
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .bg-gradient-to-r.from-white.via-gray-50.to-white .text-gray-700 {
+            color: #FFFFFF !important;
+        }
+
+        body.dark-mode .bg-gradient-to-r.from-white.via-gray-50.to-white .text-gray-600 {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode .bg-gradient-to-r.from-white.via-gray-50.to-white .text-indigo-600 {
+            color: #C7D2FE !important;
+        }
+
+        body.dark-mode .bg-gradient-to-r.from-white.via-gray-50.to-white .font-mono {
+            color: #A5F3FC !important;
         }
 
         body.dark-mode [class*="border-l-4"] strong {
@@ -992,6 +1055,25 @@
 
         body.dark-mode .field-row {
             border-bottom-color: rgba(255, 255, 255, 0.08);
+            color: #D1D5DB;
+        }
+
+        /* ERD Section field text colors - Light mode */
+        .erd-explorer-container .field-row {
+            color: #4B5563;
+        }
+
+        .erd-explorer-container .id-field {
+            color: inherit;
+        }
+
+        /* ERD Section text styling - Dark mode */
+        body.dark-mode .erd-explorer-container .field-row {
+            color: #FFFFFF;
+        }
+
+        body.dark-mode .erd-explorer-container .id-field span:not(.id-field) {
+            color: #FFFFFF;
         }
 
         body.dark-mode .detail-inspector {
@@ -1006,6 +1088,19 @@
 
         body.dark-mode .detail-inspector p {
             color: #D1D5DB;
+        }
+
+        body.dark-mode .detail-inspector .bg-slate-50 {
+            background: rgba(51, 65, 85, 0.5) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode .detail-inspector .text-slate-400 {
+            color: #9CA3AF !important;
+        }
+
+        body.dark-mode .detail-inspector .text-slate-700 {
+            color: #D1D5DB !important;
         }
 
         /* Dark mode ID badges */
@@ -1124,6 +1219,264 @@
             opacity: 0;
             pointer-events: none;
         }
+
+        /* Scenario Flow Styles */
+        .scenario-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(99, 102, 241, 0.2);
+            background: rgba(255, 255, 255, 0.7);
+            color: #4B5563;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
+        }
+
+        .scenario-btn:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .scenario-btn.active {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            color: white;
+            border-color: #4F46E5;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-left: 3px solid #6366F1;
+            border-radius: 6px;
+            animation: slideIn 0.4s ease;
+        }
+
+        .flow-step.delay-1 { animation-delay: 0.1s; }
+        .flow-step.delay-2 { animation-delay: 0.2s; }
+        .flow-step.delay-3 { animation-delay: 0.3s; }
+        .flow-step.delay-4 { animation-delay: 0.4s; }
+        .flow-step.delay-5 { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .flow-table-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            color: white;
+        }
+
+        .flow-table-badge.schools { background: #8B5CF6; }
+        .flow-table-badge.users { background: #3B82F6; }
+        .flow-table-badge.parents { background: #10B981; }
+        .flow-table-badge.classes { background: #F59E0B; }
+        .flow-table-badge.students { background: #EC4899; }
+        .flow-table-badge.invoices { background: #DC2626; }
+        .flow-table-badge.attendance { background: #6366F1; }
+        .flow-table-badge.homework { background: #EC4899; }
+
+        #flow-container {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(107, 114, 128, 0.15);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
+            overflow-x: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #scenario-diagram {
+            min-width: 100%;
+            height: auto;
+        }
+
+        body.dark-mode #flow-container {
+            background: rgba(31, 41, 55, 0.6);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .flow-description {
+            color: #4B5563;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .flow-arrow {
+            color: #9CA3AF;
+            font-weight: bold;
+            margin: 0 8px;
+        }
+
+        body.dark-mode .scenario-btn {
+            background: rgba(51, 65, 85, 0.5);
+            color: #E5E7EB;
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        body.dark-mode .scenario-btn:hover {
+            background: rgba(51, 65, 85, 0.7);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        body.dark-mode .flow-step {
+            background: rgba(51, 65, 85, 0.5);
+            color: #D1D5DB;
+        }
+
+        body.dark-mode .flow-description {
+            color: #D1D5DB;
+        }
+
+        body.dark-mode .flow-arrow {
+            color: #6B7280;
+        }
+
+        /* Scenario Explorer Detail Inspector Dark Mode */
+        body.dark-mode #scenario-explorer .bg-white {
+            background: rgba(30, 35, 46, 0.98) !important;
+            color: #F3F4F6;
+        }
+
+        body.dark-mode #scenario-explorer .text-slate-800 {
+            color: #F3F4F6 !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-sm.text-slate-600 {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-xs {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-slate-400 {
+            color: #9CA3AF !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-slate-600 {
+            color: #D1D5DB !important;
+        }
+
+        body.dark-mode #scenario-explorer .bg-slate-50 {
+            background: rgba(51, 65, 85, 0.7) !important;
+        }
+
+        body.dark-mode #scenario-explorer .border-gray-200 {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        body.dark-mode #scenario-explorer .border-slate-100 {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode #scenario-explorer .border-b.border-gray-100 {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode #scenario-explorer .bg-yellow-100 {
+            background: rgba(217, 119, 6, 0.3) !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-xs {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-xs.font-bold {
+            color: #D1D5DB !important;
+        }
+
+        body.dark-mode #scenario-explorer .space-y-1 li {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode #scenario-explorer .italic {
+            color: #9CA3AF !important;
+        }
+
+        /* Scenario table field text colors - Light mode */
+        #scenario-explorer .text-slate-700 {
+            color: #374151 !important;
+        }
+
+        #scenario-explorer .text-slate-600 {
+            color: #4B5563 !important;
+        }
+
+        #scenario-explorer .text-slate-400.italic {
+            color: #6B7280 !important;
+        }
+
+        /* Scenario table field text colors - Dark mode */
+        body.dark-mode #scenario-explorer .text-slate-700 {
+            color: #E5E7EB !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-slate-600 {
+            color: #D1D5DB !important;
+        }
+
+        body.dark-mode #scenario-explorer .text-slate-400.italic {
+            color: #D1D5DB !important;
+        }
+
+        /* Scenario table highlight on ID hover */
+        #scenario-explorer .bg-yellow-100 {
+            transition: background-color 0.2s ease;
+        }
+
+        /* Section 1 Intro Cards - Dark Mode */
+        body.dark-mode .bg-gradient-to-br.from-indigo-50.to-blue-50 {
+            background: linear-gradient(to bottom right, rgba(67, 56, 202, 0.2), rgba(37, 99, 235, 0.2)) !important;
+            border-color: rgba(99, 102, 241, 0.4) !important;
+        }
+
+        body.dark-mode .bg-gradient-to-br.from-amber-50.to-orange-50 {
+            background: linear-gradient(to bottom right, rgba(180, 83, 9, 0.2), rgba(217, 119, 6, 0.2)) !important;
+            border-color: rgba(217, 119, 6, 0.4) !important;
+        }
+
+        body.dark-mode .bg-gradient-to-br.from-emerald-50.to-teal-50 {
+            background: linear-gradient(to bottom right, rgba(5, 150, 105, 0.2), rgba(20, 184, 166, 0.2)) !important;
+            border-color: rgba(16, 185, 129, 0.4) !important;
+        }
+
+        body.dark-mode .text-indigo-900 {
+            color: #A5B4FC !important;
+        }
+
+        body.dark-mode .text-amber-900 {
+            color: #FCD34D !important;
+        }
+
+        body.dark-mode .text-emerald-900 {
+            color: #6EE7B7 !important;
+        }
+
+        body.dark-mode .text-gray-700:not(.text-indigo-900):not(.text-amber-900):not(.text-emerald-900) {
+            color: #E5E7EB !important;
+        }
     </style>
 </head>
 <body>
@@ -1142,17 +1495,37 @@
     <section id="erd-diagram" class="py-12 bg-gradient-to-br from-white via-gray-50 to-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-900">Section 1: Entity Relationship Diagram</h2>
-                <div class="mt-4 space-y-3">
-                    <p class="text-gray-600 max-w-4xl">
-                        <strong>Flow Overview:</strong> SchoolNest is built on a <strong>multi-tenant architecture</strong> where <strong>Schools</strong> are the root organization. Every school manages users with role-based permissions (SUPER_ADMIN → SCHOOL_ADMIN → ASSISTANT → TEACHER → PARENT), handles academic operations (Classes → Students → Homework → Attendance), and manages billing (Invoices). Parents login once and can switch between children to view all their data—no separate student logins needed.
-                    </p>
-                    <p class="text-gray-600 max-w-4xl">
-                        <strong>The 8 Core Tables:</strong> 🏫 Schools (root master) → 👤 Users (authentication) → 👨‍👩‍👧 Parents (guardians) → 📚 Classes (academic units) → 👨‍🎓 Students (enrolled learners) → 💰 Invoices (billing) → 📅 Attendance (tracking) → 📝 Homework (assignments). All connected through foreign keys showing how data flows through the system.
-                    </p>
-                    <p class="text-gray-600 max-w-4xl text-sm">
-                        <strong>Interactive Features:</strong> Drag tables to rearrange the diagram. Click any table to view its role, fields, and operations. Hover over any ID field (marked with 🔑 for Primary Keys or 🔗 for Foreign Keys) to highlight all connected tables and see the relationship flow.
-                    </p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Section 1: Entity Relationship Diagram</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Flow Overview Card -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-lg p-5">
+                        <h3 class="text-sm font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                            <span>🏗️</span> Architecture
+                        </h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            Multi-tenant system where <strong>Schools</strong> are root. Supports role-based access (SUPER_ADMIN → PARENT) with academic operations and billing.
+                        </p>
+                    </div>
+
+                    <!-- Core Tables Card -->
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-lg p-5">
+                        <h3 class="text-sm font-bold text-amber-900 mb-2 flex items-center gap-2">
+                            <span>📊</span> Core Tables
+                        </h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            8 tables: Schools → Users → Parents → Classes → Students → Invoices, Attendance, Homework. Connected via foreign keys.
+                        </p>
+                    </div>
+
+                    <!-- Interactive Features Card -->
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 rounded-lg p-5">
+                        <h3 class="text-sm font-bold text-emerald-900 mb-2 flex items-center gap-2">
+                            <span>✨</span> Interact
+                        </h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            Drag tables to rearrange. Click tables for details. Hover IDs (🔑🔗) to highlight connections across all tables.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -1242,12 +1615,112 @@
         </div>
     </section>
 
-    <!-- Section 2: Database Schema -->
+    <!-- Section 2: Real-World Database Flows -->
+    <section id="scenario-flows" class="py-12 bg-gradient-to-br from-indigo-50 via-white to-purple-50 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Section 2: Real-World Database Flows</h2>
+                <p class="text-gray-600 max-w-3xl">
+                    Click on a scenario below to see how data flows through the database schema. This shows the exact tables involved and how they interact in real-world operations.
+                </p>
+            </div>
+
+            <!-- Scenario App -->
+            <div id="scenario-explorer">
+                <!-- Scenario Selector Buttons -->
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <button @click="selectScenario('attendance')" class="scenario-btn" :class="{ active: currentScenario === 'attendance' }">
+                        📅 Teacher Attendance Flow
+                    </button>
+                    <button @click="selectScenario('homework')" class="scenario-btn" :class="{ active: currentScenario === 'homework' }">
+                        📝 Homework Assignment & Submission
+                    </button>
+                    <button @click="selectScenario('billing')" class="scenario-btn" :class="{ active: currentScenario === 'billing' }">
+                        💳 Fee Billing Cycle
+                    </button>
+                </div>
+
+                <!-- Scenario Container -->
+                <div class="relative bg-white/70 backdrop-blur-sm border border-gray-100 rounded-lg p-8" style="min-height: 600px; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 30px 30px;">
+                    <!-- Connection SVG Layer -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-5" style="border-radius: 12px; overflow: hidden;">
+                        <defs>
+                            <marker id="scenario-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+                            </marker>
+                        </defs>
+                        <path v-for="link in scenarioConnections"
+                              :key="link.from + '-' + link.to"
+                              :d="calculateScenarioPath(link)"
+                              stroke="#94a3b8"
+                              stroke-width="2"
+                              fill="none"
+                              marker-end="url(#scenario-arrow)" />
+                    </svg>
+
+                    <!-- Table Nodes -->
+                    <div v-for="table in scenarioTables"
+                         :key="table.id"
+                         class="absolute w-60 bg-white rounded-lg shadow-md border-2 transition-all cursor-pointer hover:shadow-lg"
+                         :class="{ 'ring-2 ring-blue-400': selectedScenarioTable?.id === table.id }"
+                         :style="{ transform: `translate(${table.x}px, ${table.y}px)`, borderColor: table.color }"
+                         @click="selectedScenarioTable = table">
+
+                        <div class="px-4 py-3 rounded-t-lg flex items-center gap-2" :style="{ backgroundColor: table.color }">
+                            <span class="text-lg">{{ table.icon }}</span>
+                            <span class="font-bold text-white text-sm uppercase tracking-wider">{{ table.name }}</span>
+                        </div>
+
+                        <div class="py-2">
+                            <div v-for="field in table.fields"
+                                 :key="field.name"
+                                 class="flex justify-between items-center px-4 py-1 text-xs border-b border-gray-100 last:border-b-0 transition-colors"
+                                 :class="{ 'bg-yellow-100': hoveredScenarioFieldName === field.name && (field.pk || field.fk) }"
+                                 @mouseenter="hoveredScenarioFieldName = field.pk || field.fk ? field.name : null"
+                                 @mouseleave="hoveredScenarioFieldName = null">
+                                <div class="flex items-center gap-1">
+                                    <span v-if="field.pk" class="text-yellow-500">🔑</span>
+                                    <span v-if="field.fk" class="text-blue-400">🔗</span>
+                                    <span :class="{'font-bold text-slate-700': field.pk || field.fk, 'text-slate-600': !field.pk && !field.fk}">{{ field.name }}</span>
+                                </div>
+                                <span class="text-slate-400 italic text-[10px]">{{ field.type }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detail Inspector Panel -->
+                    <transition name="fade">
+                        <div v-if="selectedScenarioTable" class="absolute top-6 right-6 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 p-6 max-h-[70vh] overflow-y-auto">
+                            <div class="flex justify-between items-start mb-4">
+                                <h2 class="text-lg font-bold text-slate-800">{{ selectedScenarioTable.name }}</h2>
+                                <button @click="selectedScenarioTable = null" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-sm text-slate-600 leading-relaxed">{{ getTableDescription(selectedScenarioTable.id) }}</p>
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-2">Fields in this table</h3>
+                                    <ul class="text-xs space-y-1">
+                                        <li v-for="field in selectedScenarioTable.fields" :key="field.name" class="text-slate-600">
+                                            <span v-if="field.pk || field.fk" class="font-bold">{{ field.pk ? '🔑' : '🔗' }} {{ field.name }}</span>
+                                            <span v-else>{{ field.name }}</span>
+                                            <span class="text-slate-400 text-[9px]"> ({{ field.type }})</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Database Schema -->
     <section id="db-schema" class="py-12 bg-gradient-to-br from-white via-gray-50 to-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-gray-900">Section 2: Database Schema Design</h2>
+                    <h2 class="text-2xl font-bold text-gray-900">Section 3: Database Schema Design</h2>
                 </div>
                 <p class="mt-4 text-gray-600 max-w-3xl">
                     Complete relational database structure for SchoolNest showing all tables, columns, constraints, and relationships across services.
@@ -2563,6 +3036,7 @@
             }
         }
 
+
         // Theme Toggle
         function toggleTheme() {
             const body = document.body;
@@ -2591,6 +3065,14 @@
             } else {
                 toggle.textContent = '☀️ Light';
             }
+
+            // Initialize first scenario
+            setTimeout(() => {
+                const firstButton = document.querySelector('.scenario-btn');
+                if (firstButton) {
+                    selectScenario('attendance', firstButton);
+                }
+            }, 100);
         });
 
         // Hide header on scroll
@@ -2619,52 +3101,52 @@
         createApp({
             setup() {
                 const tables = ref([
-                    { id: 'schools', name: 'Schools', icon: '🏫', x: 50, y: 50, color: '#8B5CF6', description: 'The root multi-tenancy table. All data scoped by school_id.', ops: ['Onboard institution', 'Manage settings', 'Billing management'], fields: [
+                    { id: 'schools', name: 'Schools', icon: '🏫', x: 50, y: 50, color: '#8B5CF6', description: 'The main organization table. Every school in the system has a record here. ALL other data (users, students, classes, invoices) belongs to a specific school through school_id. Think of this as the "container" holding everything else.', ops: ['Onboard institution', 'Manage settings', 'Billing management'], fields: [
                         { name: 'school_id', type: 'INT PK', pk: true },
                         { name: 'name', type: 'VARCHAR' },
                         { name: 'email', type: 'VARCHAR' },
                         { name: 'phone', type: 'VARCHAR' },
                         { name: 'address', type: 'TEXT' }
                     ]},
-                    { id: 'users', name: 'Users', icon: '👤', x: 350, y: 50, color: '#3B82F6', description: 'Authentication and profiles for all participants.', ops: ['Password reset', 'Role assignment', 'Activity tracking'], fields: [
+                    { id: 'users', name: 'Users', icon: '👤', x: 350, y: 50, color: '#3B82F6', description: 'All people who login to the system - teachers, admins, assistants, and parents. This stores their login credentials (email) and basic info. Each user belongs to one school and gets assigned roles (like teacher or admin) that define what they can do.', ops: ['Password reset', 'Role assignment', 'Activity tracking'], fields: [
                         { name: 'user_id', type: 'INT PK', pk: true },
                         { name: 'school_id', type: 'INT FK', fk: true },
                         { name: 'email', type: 'VARCHAR' },
                         { name: 'first_name', type: 'VARCHAR' },
                         { name: 'is_active', type: 'BOOL' }
                     ]},
-                    { id: 'parents', name: 'Parents', icon: '👨‍👩‍👧', x: 650, y: 50, color: '#10B981', description: 'Parent profiles linked to user accounts.', ops: ['Link student', 'Update contact', 'Track children'], fields: [
+                    { id: 'parents', name: 'Parents', icon: '👨‍👩‍👧', x: 650, y: 50, color: '#10B981', description: 'Parent information attached to user accounts. A parent user logs in ONCE with their credentials, then can switch between children to view all their kids\' homework, attendance, grades, and fees. No separate student logins needed - parents manage everything.', ops: ['Link student', 'Update contact', 'Track children'], fields: [
                         { name: 'parent_id', type: 'INT PK', pk: true },
                         { name: 'user_id', type: 'INT FK', fk: true },
                         { name: 'relationship', type: 'VARCHAR' },
                         { name: 'guardian_since', type: 'DATE' }
                     ]},
-                    { id: 'classes', name: 'Classes', icon: '📚', x: 200, y: 350, color: '#F59E0B', description: 'Academic sections within grades.', ops: ['Create class', 'Assign teachers', 'Grade setup'], fields: [
+                    { id: 'classes', name: 'Classes', icon: '📚', x: 200, y: 350, color: '#F59E0B', description: 'Groups of students learning together, like "Class 10-A" or "Grade 5 Section B". Each class belongs to one school and has a grade level and section (A, B, C, etc.). Teachers are assigned to classes, and students are enrolled in classes. All homework and attendance is tracked per class.', ops: ['Create class', 'Assign teachers', 'Grade setup'], fields: [
                         { name: 'class_id', type: 'INT PK', pk: true },
                         { name: 'school_id', type: 'INT FK', fk: true },
                         { name: 'name', type: 'VARCHAR' },
                         { name: 'grade', type: 'INT' },
                         { name: 'section', type: 'VARCHAR' }
                     ]},
-                    { id: 'students', name: 'Students', icon: '👨‍🎓', x: 500, y: 350, color: '#EC4899', description: 'Core student records with academic links.', ops: ['Enrollment', 'Class transfer', 'Graduation'], fields: [
+                    { id: 'students', name: 'Students', icon: '👨‍🎓', x: 500, y: 350, color: '#EC4899', description: 'All students in the school. Each student is linked to a class (which determines what they study), a parent (their guardian), and their school. Students are the center of the system - all their homework, attendance records, and fees are tracked through their student record.', ops: ['Enrollment', 'Class transfer', 'Graduation'], fields: [
                         { name: 'student_id', type: 'INT PK', pk: true },
                         { name: 'school_id', type: 'INT FK', fk: true },
                         { name: 'class_id', type: 'INT FK', fk: true },
                         { name: 'parent_id', type: 'INT FK', fk: true },
                         { name: 'first_name', type: 'VARCHAR' }
                     ]},
-                    { id: 'invoices', name: 'Invoices', icon: '💰', x: 50, y: 600, color: '#DC2626', description: 'Fee management and billing history.', ops: ['Generate fees', 'Payment tracking', 'Late fee calc'], fields: [
+                    { id: 'invoices', name: 'Invoices', icon: '💰', x: 50, y: 600, color: '#DC2626', description: 'Fee records for each student. When the school generates monthly or yearly fees, an invoice is created for each student. Parents can see what fees are due, payment dates, and track payment history. Every invoice is linked to one student.', ops: ['Generate fees', 'Payment tracking', 'Late fee calc'], fields: [
                         { name: 'invoice_id', type: 'INT PK', pk: true },
                         { name: 'student_id', type: 'INT FK', fk: true },
                         { name: 'amount', type: 'DECIMAL' }
                     ]},
-                    { id: 'attendance', name: 'Attendance', icon: '📅', x: 350, y: 600, color: '#6366F1', description: 'Daily attendance tracking.', ops: ['Mark attendance', 'Bulk entry', 'Reports'], fields: [
+                    { id: 'attendance', name: 'Attendance', icon: '📅', x: 350, y: 600, color: '#6366F1', description: 'Daily attendance records for each student. Every school day, teachers mark students as present or absent. This creates a history that helps identify patterns, send alerts for too many absences, and track attendance for grading. Each attendance record links a student to a specific date and their status.', ops: ['Mark attendance', 'Bulk entry', 'Reports'], fields: [
                         { name: 'attend_id', type: 'INT PK', pk: true },
                         { name: 'student_id', type: 'INT FK', fk: true },
                         { name: 'date', type: 'DATE' },
                         { name: 'status', type: 'VARCHAR' }
                     ]},
-                    { id: 'homework', name: 'Homework', icon: '📝', x: 650, y: 600, color: '#EC4899', description: 'Class assignments and submissions.', ops: ['Publish work', 'Grade submissions', 'Deadline track'], fields: [
+                    { id: 'homework', name: 'Homework', icon: '📝', x: 650, y: 600, color: '#EC4899', description: 'Assignments given to entire classes. Teachers create homework tasks for a class (like "Chapter 5 math due Friday") and students submit their work. The system tracks which assignments are pending, which are submitted, and helps manage deadlines. Each homework record is linked to a class, not individual students.', ops: ['Publish work', 'Grade submissions', 'Deadline track'], fields: [
                         { name: 'homework_id', type: 'INT PK', pk: true },
                         { name: 'class_id', type: 'INT FK', fk: true },
                         { name: 'title', type: 'VARCHAR' },
@@ -2817,6 +3299,170 @@
                 </div>
             `
         }).mount('#erd-app');
+
+        // Scenario Explorer Vue App
+        const scenarioTableDatabase = {
+            'schools': { id: 'schools', name: 'Schools', icon: '🏫', color: '#8B5CF6', fields: [
+                { name: 'school_id', type: 'INT PK', pk: true },
+                { name: 'name', type: 'VARCHAR' },
+                { name: 'email', type: 'VARCHAR' },
+                { name: 'phone', type: 'VARCHAR' },
+                { name: 'address', type: 'TEXT' }
+            ]},
+            'users': { id: 'users', name: 'Users', icon: '👤', color: '#3B82F6', fields: [
+                { name: 'user_id', type: 'INT PK', pk: true },
+                { name: 'school_id', type: 'INT FK', fk: true },
+                { name: 'email', type: 'VARCHAR' },
+                { name: 'first_name', type: 'VARCHAR' },
+                { name: 'is_active', type: 'BOOL' }
+            ]},
+            'parents': { id: 'parents', name: 'Parents', icon: '👨‍👩‍👧', color: '#10B981', fields: [
+                { name: 'parent_id', type: 'INT PK', pk: true },
+                { name: 'user_id', type: 'INT FK', fk: true },
+                { name: 'relationship', type: 'VARCHAR' },
+                { name: 'guardian_since', type: 'DATE' }
+            ]},
+            'classes': { id: 'classes', name: 'Classes', icon: '📚', color: '#F59E0B', fields: [
+                { name: 'class_id', type: 'INT PK', pk: true },
+                { name: 'school_id', type: 'INT FK', fk: true },
+                { name: 'name', type: 'VARCHAR' },
+                { name: 'grade', type: 'INT' },
+                { name: 'section', type: 'VARCHAR' }
+            ]},
+            'students': { id: 'students', name: 'Students', icon: '👨‍🎓', color: '#EC4899', fields: [
+                { name: 'student_id', type: 'INT PK', pk: true },
+                { name: 'school_id', type: 'INT FK', fk: true },
+                { name: 'class_id', type: 'INT FK', fk: true },
+                { name: 'parent_id', type: 'INT FK', fk: true },
+                { name: 'first_name', type: 'VARCHAR' }
+            ]},
+            'invoices': { id: 'invoices', name: 'Invoices', icon: '💰', color: '#DC2626', fields: [
+                { name: 'invoice_id', type: 'INT PK', pk: true },
+                { name: 'student_id', type: 'INT FK', fk: true },
+                { name: 'amount', type: 'DECIMAL' }
+            ]},
+            'attendance': { id: 'attendance', name: 'Attendance', icon: '📅', color: '#6366F1', fields: [
+                { name: 'attend_id', type: 'INT PK', pk: true },
+                { name: 'student_id', type: 'INT FK', fk: true },
+                { name: 'date', type: 'DATE' },
+                { name: 'status', type: 'VARCHAR' }
+            ]},
+            'homework': { id: 'homework', name: 'Homework', icon: '📝', color: '#EC4899', fields: [
+                { name: 'homework_id', type: 'INT PK', pk: true },
+                { name: 'class_id', type: 'INT FK', fk: true },
+                { name: 'title', type: 'VARCHAR' },
+                { name: 'due_date', type: 'DATE' }
+            ]}
+        };
+
+        const scenarioFlowsData = {
+            attendance: {
+                title: '📅 Teacher Attendance Flow',
+                tableIds: ['users', 'classes', 'students', 'attendance', 'parents'],
+                positions: { users: { x: 50, y: 100 }, classes: { x: 350, y: 100 }, students: { x: 650, y: 100 }, attendance: { x: 950, y: 100 }, parents: { x: 500, y: 350 } },
+                connections: [
+                    { from: 'users', to: 'classes' },
+                    { from: 'classes', to: 'students' },
+                    { from: 'students', to: 'attendance' },
+                    { from: 'parents', to: 'students' }
+                ]
+            },
+            homework: {
+                title: '📝 Homework Assignment & Submission',
+                tableIds: ['users', 'classes', 'homework', 'students', 'parents'],
+                positions: { users: { x: 50, y: 100 }, classes: { x: 350, y: 100 }, homework: { x: 650, y: 100 }, students: { x: 950, y: 100 }, parents: { x: 500, y: 350 } },
+                connections: [
+                    { from: 'users', to: 'classes' },
+                    { from: 'classes', to: 'homework' },
+                    { from: 'classes', to: 'students' },
+                    { from: 'parents', to: 'students' }
+                ]
+            },
+            billing: {
+                title: '💳 Fee Billing Cycle',
+                tableIds: ['schools', 'students', 'invoices', 'parents'],
+                positions: { schools: { x: 50, y: 100 }, students: { x: 350, y: 100 }, invoices: { x: 650, y: 100 }, parents: { x: 350, y: 350 } },
+                connections: [
+                    { from: 'schools', to: 'students' },
+                    { from: 'students', to: 'invoices' },
+                    { from: 'parents', to: 'invoices' }
+                ]
+            }
+        };
+
+        createApp({
+            setup() {
+                const currentScenario = ref('attendance');
+
+                const scenarioTables = Vue.computed(() => {
+                    const flow = scenarioFlowsData[currentScenario.value];
+                    return flow.tableIds.map(id => {
+                        const table = scenarioTableDatabase[id];
+                        const pos = flow.positions[id];
+                        return {
+                            ...table,
+                            x: pos.x,
+                            y: pos.y
+                        };
+                    });
+                });
+
+                const scenarioConnections = Vue.computed(() => {
+                    return scenarioFlowsData[currentScenario.value].connections;
+                });
+
+                const calculateScenarioPath = (link) => {
+                    const flow = scenarioFlowsData[currentScenario.value];
+                    const from = flow.positions[link.from];
+                    const to = flow.positions[link.to];
+                    if (!from || !to) return '';
+
+                    const fX = from.x + 120;
+                    const fY = from.y + 70;
+                    const tX = to.x + 120;
+                    const tY = to.y + 70;
+
+                    const midX = (fX + tX) / 2;
+                    const midY = (fY + tY) / 2;
+
+                    return `M ${fX} ${fY} Q ${midX} ${fY} ${midX} ${midY} T ${tX} ${tY}`;
+                };
+
+                const selectScenario = (scenario) => {
+                    currentScenario.value = scenario;
+                    selectedScenarioTable.value = null;
+                };
+
+                const selectedScenarioTable = ref(null);
+                const hoveredScenarioFieldName = ref(null);
+
+                const tableDescriptions = {
+                    'schools': 'The root organization table. Manages school information and settings. All other data in the system belongs to a specific school.',
+                    'users': 'Handles authentication and user accounts. Teachers, admins, and parents login through this table. Assigned roles define their permissions.',
+                    'parents': 'Parent/guardian profiles linked to user accounts. Parents login once and access all their children\'s information (attendance, homework, fees).',
+                    'classes': 'Academic sections or groups within a school (e.g., Class 10-A, Grade 5 Section B). Contains all students enrolled in that group.',
+                    'students': 'Core student records. Each student belongs to a class, school, and has a parent guardian. Center point for all academic and billing data.',
+                    'invoices': 'Billing records for student fees. Generated for each student, tracks amount due, payment status, and payment history.',
+                    'attendance': 'Daily attendance tracking records. Teachers mark students present/absent/late. Used to monitor patterns and alert parents.',
+                    'homework': 'Class assignments and homework. Teachers create homework for entire classes. Students submit work and get grades.'
+                };
+
+                const getTableDescription = (tableId) => {
+                    return tableDescriptions[tableId] || 'Table information';
+                };
+
+                return {
+                    currentScenario,
+                    scenarioTables,
+                    scenarioConnections,
+                    calculateScenarioPath,
+                    selectScenario,
+                    selectedScenarioTable,
+                    hoveredScenarioFieldName,
+                    getTableDescription
+                };
+            }
+        }).mount('#scenario-explorer');
     </script>
 </body>
 </html>
