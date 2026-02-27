@@ -881,11 +881,90 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 12px;
+            padding: 8px 10px;
             font-size: 12px;
             border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s ease;
         }
         .field-row:last-child { border-bottom: none; }
+
+        /* ID Field Badge Styling */
+        .id-field {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .id-field.pk-badge {
+            background: linear-gradient(135deg, #FEF08A 0%, #FEF3C7 100%);
+            color: #92400E;
+            border: 1px solid #FCD34D;
+        }
+
+        .id-field.pk-badge:hover {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            box-shadow: 0 0 16px rgba(251, 191, 36, 0.8), 0 0 24px rgba(251, 191, 36, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.4);
+            transform: scale(1.12);
+            border-color: #F59E0B;
+            filter: brightness(1.15);
+        }
+
+        .id-field.fk-badge {
+            background: linear-gradient(135deg, #DBEAFE 0%, #BFDBfe 100%);
+            color: #1E40AF;
+            border: 1px solid #93C5FD;
+        }
+
+        .id-field.fk-badge:hover {
+            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(96, 165, 250, 0.8), 0 0 24px rgba(59, 130, 246, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.3);
+            transform: scale(1.12);
+            border-color: #3B82F6;
+            filter: brightness(1.15);
+        }
+
+        /* Highlight matching IDs across tables */
+        .field-row.id-match {
+            background-color: rgba(253, 224, 71, 0.45) !important;
+            border-radius: 6px;
+            border-left: 3px solid #FBBF24;
+            animation: highlightPulse 0.3s ease-in-out;
+            font-weight: 500;
+        }
+
+        .field-row.id-match.fk-match {
+            background-color: rgba(96, 165, 250, 0.45) !important;
+            border-left-color: #60A5FA;
+        }
+
+        @keyframes highlightPulse {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(2px); }
+            100% { transform: translateX(0); }
+        }
+
+        .id-field.active-highlight {
+            box-shadow: 0 0 16px currentColor, 0 0 24px currentColor;
+            filter: brightness(1.2);
+            font-weight: 700;
+        }
+
+        /* Type-specific ID colors */
+        .id-school { --id-color: #8B5CF6; }
+        .id-user { --id-color: #3B82F6; }
+        .id-parent { --id-color: #10B981; }
+        .id-class { --id-color: #F59E0B; }
+        .id-student { --id-color: #EC4899; }
+        .id-invoice { --id-color: #DC2626; }
+        .id-attend { --id-color: #6366F1; }
+        .id-homework { --id-color: #EC4899; }
 
         .detail-inspector {
             position: absolute;
@@ -932,6 +1011,48 @@
 
         body.dark-mode .detail-inspector p {
             color: #D1D5DB;
+        }
+
+        /* Dark mode ID badges */
+        body.dark-mode .id-field.pk-badge {
+            background: linear-gradient(135deg, #854D0E 0%, #92400E 100%);
+            color: #FEF3C7;
+            border-color: #B45309;
+        }
+
+        body.dark-mode .id-field.pk-badge:hover {
+            background: linear-gradient(135deg, #D97706 0%, #EA580C 100%);
+            box-shadow: 0 0 16px rgba(217, 119, 6, 0.8), 0 0 24px rgba(217, 119, 6, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.2);
+            transform: scale(1.12);
+            border-color: #EA580C;
+            filter: brightness(1.2);
+        }
+
+        body.dark-mode .id-field.fk-badge {
+            background: linear-gradient(135deg, #0C4A6E 0%, #0F172A 100%);
+            color: #BFDBFE;
+            border-color: #0369A1;
+        }
+
+        body.dark-mode .id-field.fk-badge:hover {
+            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(2, 132, 199, 0.8), 0 0 24px rgba(2, 132, 199, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.2);
+            transform: scale(1.12);
+            border-color: #0284C7;
+            filter: brightness(1.2);
+        }
+
+        body.dark-mode .field-row.id-match {
+            background-color: rgba(217, 119, 6, 0.45) !important;
+            border-left: 3px solid #D97706;
+            animation: highlightPulse 0.3s ease-in-out;
+            font-weight: 500;
+        }
+
+        body.dark-mode .field-row.id-match.fk-match {
+            background-color: rgba(2, 132, 199, 0.45) !important;
+            border-left-color: #0284C7;
         }
 
         /* Vue transitions */
@@ -2423,6 +2544,7 @@
 
                 const draggingTable = ref(null);
                 const selectedTable = ref(null);
+                const hoveredFieldName = ref(null);
                 const offset = { x: 0, y: 0 };
 
                 const startDrag = (e, table) => {
@@ -2453,15 +2575,42 @@
                     return 'M ' + fX + ' ' + fY + ' Q ' + midX + ' ' + fY + ' ' + midX + ' ' + midY + ' T ' + tX + ' ' + tY;
                 };
 
+                const getIdClass = (fieldName) => {
+                    // Return class based on ID type for color coding
+                    if (fieldName.includes('school')) return 'id-school';
+                    if (fieldName.includes('user')) return 'id-user';
+                    if (fieldName.includes('parent')) return 'id-parent';
+                    if (fieldName.includes('class')) return 'id-class';
+                    if (fieldName.includes('student')) return 'id-student';
+                    if (fieldName.includes('invoice')) return 'id-invoice';
+                    if (fieldName.includes('attend')) return 'id-attend';
+                    if (fieldName.includes('homework')) return 'id-homework';
+                    return '';
+                };
+
+                const highlightMatchingIds = (fieldName, isId) => {
+                    if (isId) {
+                        hoveredFieldName.value = fieldName;
+                    }
+                };
+
+                const clearHighlight = () => {
+                    hoveredFieldName.value = null;
+                };
+
                 return {
                     tables,
                     connections,
                     draggingTable,
                     selectedTable,
+                    hoveredFieldName,
                     startDrag,
                     onMouseMove,
                     endMove,
-                    calculatePath
+                    calculatePath,
+                    getIdClass,
+                    highlightMatchingIds,
+                    clearHighlight
                 };
             },
             template: `
@@ -2488,11 +2637,19 @@
                             <span class="font-bold text-sm uppercase tracking-wider">{{ table.name }}</span>
                         </div>
                         <div class="py-2">
-                            <div v-for="field in table.fields" :key="field.name" class="field-row">
+                            <div v-for="field in table.fields" :key="field.name"
+                                 class="field-row"
+                                 :class="{ 'id-match': hoveredFieldName === field.name, 'fk-match': field.fk && hoveredFieldName === field.name }"
+                                 @mouseenter="highlightMatchingIds(field.name, field.pk || field.fk)"
+                                 @mouseleave="clearHighlight">
                                 <div class="flex items-center gap-1">
-                                    <span v-if="field.pk">🔑</span>
-                                    <span v-if="field.fk">🔗</span>
-                                    <span :class="{'font-bold text-slate-700': field.pk || field.fk, 'text-slate-600': !field.pk && !field.fk}">{{ field.name }}</span>
+                                    <span v-if="field.pk || field.fk"
+                                          class="id-field"
+                                          :class="[field.pk ? 'pk-badge' : 'fk-badge', getIdClass(field.name)]">
+                                        <span>{{ field.pk ? '🔑' : '🔗' }}</span>
+                                        <span>{{ field.name }}</span>
+                                    </span>
+                                    <span v-else :class="{'text-slate-600': true}">{{ field.name }}</span>
                                 </div>
                                 <span class="text-slate-400 italic text-[10px]">{{ field.type }}</span>
                             </div>
