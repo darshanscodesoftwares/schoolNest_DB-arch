@@ -6,46 +6,250 @@
     <title>Database Schema Design</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Database Schema Styles */
+        /* CSS Variables for Theme */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #F3F4F6 0%, #FFFFFF 50%, #F3F4F6 100%);
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-light: rgba(107, 114, 128, 0.15);
+        }
+        body.dark-mode {
+            --bg-gradient: linear-gradient(135deg, #1F2937 0%, #111827 50%, #1F2937 100%);
+            --text-primary: #F3F4F6;
+            --text-secondary: #D1D5DB;
+            --border-light: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dark mode text colors */
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        body.dark-mode .text-gray-900 {
+            color: #F3F4F6 !important;
+        }
+
+        body.dark-mode .text-gray-600,
+        body.dark-mode p {
+            color: #D1D5DB !important;
+        }
+
+        body.dark-mode .db-filter-btn {
+            background: rgba(31, 41, 55, 0.6);
+            color: #E5E7EB;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .db-filter-btn:hover {
+            background: rgba(31, 41, 55, 0.8);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        body.dark-mode .table-card {
+            background: rgba(31, 41, 55, 0.6);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .table-header {
+            background: rgba(31, 41, 55, 0.4);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #E5E7EB;
+        }
+
+        body.dark-mode .columns-table th {
+            background: rgba(31, 41, 55, 0.5);
+            color: #D1D5DB;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-mode .columns-table td {
+            border-color: rgba(255, 255, 255, 0.06);
+            color: #D1D5DB;
+        }
+
+        body.dark-mode .col-name {
+            color: #A5B4FC;
+        }
+
+        body.dark-mode .col-type {
+            color: #9CA3AF;
+        }
+
+        body.dark-mode .flow-diagram {
+            background: rgba(31, 41, 55, 0.6);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .flow-box {
+            background: rgba(31, 41, 55, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #E5E7EB;
+        }
+
+        body.dark-mode .flow-tab-btn {
+            background: rgba(31, 41, 55, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #E5E7EB;
+        }
+
+        body.dark-mode .flow-step {
+            background: rgba(31, 41, 55, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #E5E7EB;
+        }
+
+        body.dark-mode .flow-info-box {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: #D1D5DB;
+        }
+
+        body.dark-mode section {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.3) 0%, rgba(17, 24, 39, 0.3) 100%) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #E5E7EB;
+        }
+
+        body.dark-mode #db-schema {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.4) 0%, rgba(17, 24, 39, 0.4) 100%) !important;
+        }
+
+        body.dark-mode .data-flow-section {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.3) 0%, rgba(17, 24, 39, 0.3) 100%) !important;
+        }
+
+        body.dark-mode .bg-white\/60 {
+            background: rgba(31, 41, 55, 0.6) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode .bg-white\/60 > div:first-child {
+            color: #A5B4FC;
+        }
+
+        body.dark-mode .bg-white\/60 p {
+            color: #D1D5DB !important;
+        }
+
+        body.dark-mode .bg-white\/60 strong {
+            color: #E5E7EB;
+        }
+
+        body.dark-mode #roles tbody tr:nth-child(odd) {
+            background-color: rgba(31, 41, 55, 0.5) !important;
+        }
+
+        body.dark-mode #roles tbody tr:nth-child(even) {
+            background-color: rgba(31, 41, 55, 0.3) !important;
+        }
+
+        body.dark-mode #roles tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.2) !important;
+        }
+
+        body.dark-mode #roles th,
+        body.dark-mode #roles td {
+            color: #E5E7EB;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode .flow-title h2 {
+            color: #F3F4F6;
+        }
+
+        body.dark-mode .flow-title p {
+            color: #D1D5DB;
+        }
+
+        /* Dark mode - Role Definitions Cards */
+        body.dark-mode > section:first-of-type > div > div {
+            background: transparent !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* Target role definition cards specifically */
+        body.dark-mode [class*="border-l-4"] {
+            background: rgba(99, 102, 241, 0.15) !important;
+            border-color: rgba(99, 102, 241, 0.4) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        body.dark-mode [class*="border-l-4"] div:first-child {
+            color: #A5B4FC !important;
+        }
+
+        body.dark-mode [class*="border-l-4"] p {
+            color: #D1D5DB !important;
+        }
+
+        body.dark-mode [class*="border-l-4"] strong {
+            color: #E5E7EB !important;
+        }
+
+        /* Role Definitions section heading */
+        body.dark-mode h3 {
+            color: #F3F4F6 !important;
+        }
+
+        /* Modern Glassmorphism Design */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+
         .db-filter-btn {
-            background-color: white;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            outline: 1px solid rgba(107, 114, 128, 0.08);
             cursor: pointer;
-            border-radius: 0.5rem;
+            border-radius: 8px;
             transition: all 0.3s ease;
+            color: #6B7280;
+            font-weight: 500;
+            padding: 8px 16px;
         }
         .db-filter-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
         }
         .db-filter-btn.active {
-            background-color: #3B82F6 !important;
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
             color: white !important;
-            border-color: #1E40AF !important;
+            border-color: transparent !important;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
         .table-card {
-            background: white;
-            border: 2px solid #E5E7EB;
-            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
+            border-radius: 12px;
             transition: all 0.3s ease;
+            overflow: hidden;
         }
         .table-card:hover {
-            border-color: #3B82F6;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.12);
         }
         .table-card.hidden {
             display: none;
         }
         .table-header {
-            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
-            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 10px 14px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             user-select: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
         .table-header:hover {
-            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+            background: rgba(255, 255, 255, 0.6);
         }
         .table-toggle {
             display: inline-flex;
@@ -73,23 +277,24 @@
             font-size: 13px;
         }
         .columns-table th {
-            background-color: #F9FAFB;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
             padding: 10px;
             text-align: left;
             font-weight: 600;
-            color: #374151;
-            border-bottom: 1px solid #E5E7EB;
+            color: #6B7280;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
         .columns-table td {
             padding: 10px;
-            border-bottom: 1px solid #F3F4F6;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         .columns-table tr:hover {
-            background-color: #F9FAFB;
+            background-color: rgba(255, 255, 255, 0.3);
         }
         .col-name {
             font-family: 'Courier New', monospace;
-            color: #1E40AF;
+            color: #6366F1;
             font-weight: 600;
             cursor: pointer;
             position: relative;
@@ -97,17 +302,18 @@
         }
         .col-name:hover {
             text-decoration: underline;
-            color: #0EA5E9;
+            color: #4F46E5;
         }
         .col-name.highlighted {
-            background-color: #FEF08A;
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
             padding: 2px 4px;
             border-radius: 3px;
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+            border: 1px solid rgba(99, 102, 241, 0.3);
         }
         .col-type {
             font-family: 'Courier New', monospace;
-            color: #059669;
+            color: #6B7280;
             font-weight: 500;
         }
         .col-constraint {
@@ -118,11 +324,11 @@
             font-weight: 600;
             margin-right: 4px;
         }
-        .col-pk { background-color: #FCA5A5; color: #7F1D1D; }
-        .col-fk { background-color: #BFDBFE; color: #1E3A8A; }
-        .col-uk { background-color: #FBBF24; color: #92400E; }
-        .col-nn { background-color: #FEE2E2; color: #991B1B; }
-        .col-idx { background-color: #E9D5FF; color: #581C87; }
+        .col-pk { background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFFFFF; }
+        .col-fk { background-color: #EEF2FF; color: #4F46E5; }
+        .col-uk { background-color: #F3F4F6; color: #6B7280; }
+        .col-nn { background-color: #F9FAFB; color: #6B7280; border: 1px solid #E5E7EB; }
+        .col-idx { background-color: #EEF2FF; color: #4F46E5; }
         .service-badge {
             display: inline-block;
             padding: 4px 12px;
@@ -131,35 +337,48 @@
             font-weight: 700;
             margin-right: 8px;
         }
-        .service-academic { background-color: #DBEAFE; color: #1E40AF; }
-        .service-billing { background-color: #FEF3C7; color: #78350F; }
-        .service-communication { background-color: #DCFCE7; color: #065F46; }
-        .service-user { background-color: #E9D5FF; color: #581C87; }
-        .service-system { background-color: #F3F4F6; color: #374151; }
+        .service-academic { background-color: #EEF2FF; color: #4F46E5; }
+        .service-billing { background-color: #F3F4F6; color: #6B7280; }
+        .service-communication { background-color: #EEF2FF; color: #4F46E5; }
+        .service-user { background-color: #EEF2FF; color: #4F46E5; }
+        .service-system { background-color: #F9FAFB; color: #6B7280; }
 
         /* Tooltip Styles */
         .column-tooltip {
             position: fixed;
-            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            background: rgba(31, 41, 55, 0.9);
+            backdrop-filter: blur(16px);
             color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 16px 20px;
+            border-radius: 20px;
             font-size: 12px;
             z-index: 9999;
             pointer-events: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid #3B82F6;
-            max-width: 350px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            max-width: 380px;
+            animation: slideInLeft 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         .tooltip-header {
             font-weight: 700;
-            color: #60A5FA;
-            margin-bottom: 8px;
+            color: #C7D2FE;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 6px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
         }
         .tooltip-header-content {
             display: flex;
@@ -168,7 +387,7 @@
         }
         .tooltip-count {
             display: inline-block;
-            background-color: #3B82F6;
+            background: linear-gradient(135deg, #6366F1, #4F46E5);
             color: white;
             padding: 2px 8px;
             border-radius: 12px;
@@ -184,7 +403,7 @@
             user-select: none;
         }
         .tooltip-close:hover {
-            color: #EF4444;
+            color: #F87171;
         }
         .tooltip-usage {
             display: flex;
@@ -194,29 +413,64 @@
             overflow-y: auto;
         }
         .tooltip-item {
-            padding: 6px 8px;
-            background-color: rgba(59, 130, 246, 0.1);
-            border-left: 2px solid #3B82F6;
-            border-radius: 3px;
+            padding: 10px 12px;
+            background: rgba(99, 102, 241, 0.12);
+            backdrop-filter: blur(8px);
+            border-left: 3px solid #A5B4FC;
+            border-radius: 12px;
             font-family: 'Courier New', monospace;
-            font-size: 11px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-left: 3px solid #A5B4FC;
         }
         .tooltip-item-table {
-            color: #60A5FA;
+            color: #A5B4FC;
             font-weight: 600;
         }
         .tooltip-item-role {
-            color: #86EFAC;
+            color: #D1D5DB;
             font-size: 10px;
             margin-top: 2px;
         }
         .tooltip-locked {
-            border: 2px solid #10B981 !important;
+            border: 1.5px solid #A5B4FC !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 30px rgba(165, 180, 252, 0.15) !important;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(99, 102, 241, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 50px;
+            padding: 12px 18px;
+            z-index: 10000;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .theme-toggle:hover {
+            background: rgba(99, 102, 241, 0.95);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        .theme-toggle:active {
+            transform: translateY(0);
         }
 
         /* Data Flow Section Styles */
         .data-flow-section {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
             padding: 40px 0;
             margin-top: 40px;
         }
@@ -232,12 +486,12 @@
         .flow-title h2 {
             font-size: 32px;
             font-weight: 700;
-            color: #0F172A;
+            color: #1F2937;
             margin-bottom: 12px;
         }
         .flow-title p {
             font-size: 16px;
-            color: #475569;
+            color: #6B7280;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -250,30 +504,36 @@
         }
         .flow-tab-btn {
             padding: 10px 20px;
-            border: 2px solid #CBD5E1;
-            background: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            outline: 1px solid rgba(107, 114, 128, 0.08);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            color: #475569;
+            color: #6B7280;
         }
         .flow-tab-btn:hover {
-            border-color: #3B82F6;
-            color: #3B82F6;
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
         }
         .flow-tab-btn.active {
-            background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
             color: white;
-            border-color: #1E40AF;
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
         .flow-diagram {
             display: none;
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.1);
-            border: 2px solid #E2E8F0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
         }
         .flow-diagram.active {
             display: block;
@@ -300,48 +560,53 @@
             flex: 1;
             min-width: 150px;
             padding: 20px;
-            background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
             border-radius: 10px;
-            border: 2px solid #0284C7;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
             text-align: center;
             font-weight: 600;
-            color: #0C4A6E;
+            color: #6B7280;
             transition: all 0.3s ease;
             cursor: pointer;
         }
         .flow-box:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.2);
         }
         .flow-box.primary {
-            background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
             color: white;
-            border-color: #1E40AF;
+            border-color: rgba(99, 102, 241, 0.3);
         }
         .flow-box.secondary {
-            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
-            color: white;
-            border-color: #047857;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #4F46E5;
+            border-color: rgba(99, 102, 241, 0.2);
         }
         .flow-box.warning {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            color: white;
-            border-color: #D97706;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #6B7280;
+            border-color: rgba(107, 114, 128, 0.2);
         }
         .flow-box.danger {
-            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
             color: white;
-            border-color: #DC2626;
+            border-color: rgba(99, 102, 241, 0.3);
         }
         .flow-arrow {
             font-size: 28px;
-            color: #0284C7;
+            color: #6366F1;
             font-weight: bold;
             flex: 0 0 auto;
         }
         .flow-description {
             font-size: 13px;
-            color: #64748B;
+            color: #6B7280;
             margin-top: 8px;
             min-height: 35px;
             line-height: 1.4;
@@ -349,46 +614,51 @@
         .flow-step {
             margin-bottom: 20px;
             padding: 15px;
-            background: #F8FAFC;
-            border-left: 4px solid #3B82F6;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #6366F1;
             border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
         }
         .flow-step h4 {
             margin: 0 0 8px 0;
-            color: #0F172A;
+            color: #1F2937;
             font-size: 14px;
         }
         .flow-step p {
             margin: 0;
-            color: #475569;
+            color: #6B7280;
             font-size: 13px;
         }
         .flow-info-box {
-            background: linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%);
-            border: 2px solid #F59E0B;
+            background: rgba(99, 102, 241, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
         }
         .flow-info-box h4 {
             margin: 0 0 10px 0;
-            color: #78350F;
+            color: #4F46E5;
         }
         .flow-info-box p {
             margin: 0;
-            color: #92400E;
+            color: #6B7280;
             font-size: 14px;
         }
 
         /* Role Access Matrix Table Styling */
         #roles tbody tr:nth-child(odd) {
-            background-color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.6);
         }
         #roles tbody tr:nth-child(even) {
-            background-color: #F8FAFC;
+            background-color: rgba(255, 255, 255, 0.4);
         }
         #roles tbody tr:hover {
-            background-color: #EFF6FF !important;
+            background-color: rgba(99, 102, 241, 0.08) !important;
             transition: background-color 0.2s ease;
         }
         #roles tbody tr:first-child {
@@ -396,9 +666,12 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">☀️ Light</button>
+
     <!-- Section: Database Schema -->
-    <section id="db-schema" class="py-12 bg-white border-t border-gray-200">
+    <section id="db-schema" class="py-12 bg-gradient-to-br from-white via-gray-50 to-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
                 <div class="flex items-center justify-between">
@@ -411,12 +684,12 @@
 
             <!-- Service Filter Tabs -->
             <div class="flex flex-wrap gap-2 mb-8">
-                <button onclick="filterDBTables('all')" class="db-filter-btn active px-4 py-2 rounded-lg font-medium transition border-2" data-service="all" style="background-color: #F3F4F6; border-color: #6B7280; color: #1F2937;">All Services</button>
-                <button onclick="filterDBTables('academic')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="academic" style="border-color: #3B82F6; color: #1E40AF;">🎓 Academic</button>
-                <button onclick="filterDBTables('billing')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="billing" style="border-color: #F59E0B; color: #78350F;">💳 Billing</button>
-                <button onclick="filterDBTables('communication')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="communication" style="border-color: #059669; color: #065F46;">💬 Communication</button>
-                <button onclick="filterDBTables('user')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="user" style="border-color: #7C3AED; color: #581C87;">👤 User/Auth</button>
-                <button onclick="filterDBTables('system')" class="db-filter-btn px-4 py-2 rounded-lg font-medium transition border-2" data-service="system" style="border-color: #6B7280; color: #374151;">⚙️ System</button>
+                <button onclick="filterDBTables('all')" class="db-filter-btn active" data-service="all">All Services</button>
+                <button onclick="filterDBTables('academic')" class="db-filter-btn" data-service="academic">🎓 Academic</button>
+                <button onclick="filterDBTables('billing')" class="db-filter-btn" data-service="billing">💳 Billing</button>
+                <button onclick="filterDBTables('communication')" class="db-filter-btn" data-service="communication">💬 Communication</button>
+                <button onclick="filterDBTables('user')" class="db-filter-btn" data-service="user">👤 User/Auth</button>
+                <button onclick="filterDBTables('system')" class="db-filter-btn" data-service="system">⚙️ System</button>
             </div>
 
             <!-- Tables Container -->
@@ -425,36 +698,36 @@
             </div>
 
             <!-- Role Definitions -->
-            <div class="mt-10 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-8">
+            <div class="mt-10 bg-gradient-to-r from-white via-gray-50 to-white border-1 border-gray-100 rounded-lg p-8">
                 <h3 class="text-xl font-bold text-gray-900 mb-6">👥 Role Definitions & Access Levels</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- SUPER_ADMIN -->
-                    <div class="bg-white border-l-4 border-blue-600 p-4 rounded">
-                        <div class="font-bold text-blue-600 mb-2">🔐 SUPER_ADMIN</div>
+                    <div class="bg-white/60 backdrop-blur-sm border border-white/40 border-l-4 border-l-indigo-600 p-4 rounded-lg">
+                        <div class="font-bold text-indigo-600 mb-2">🔐 SUPER_ADMIN</div>
                         <p class="text-sm text-gray-700 mb-2"><strong>Scope:</strong> Platform-wide (All schools)</p>
                         <p class="text-sm text-gray-600">Manages all schools, system settings, features, billing, and user access across the entire platform.</p>
                     </div>
                     <!-- SCHOOL_ADMIN -->
-                    <div class="bg-white border-l-4 border-indigo-600 p-4 rounded">
+                    <div class="bg-white/60 backdrop-blur-sm border border-white/40 border-l-4 border-l-indigo-600 p-4 rounded-lg">
                         <div class="font-bold text-indigo-600 mb-2">🏫 SCHOOL_ADMIN</div>
                         <p class="text-sm text-gray-700 mb-2"><strong>Scope:</strong> Single school (Tenant)</p>
                         <p class="text-sm text-gray-600">Manages school operations, staff, students, academics, fees, and assigns roles/features to users within their school.</p>
                     </div>
                     <!-- ASSISTANT -->
-                    <div class="bg-white border-l-4 border-green-600 p-4 rounded">
-                        <div class="font-bold text-green-600 mb-2">🤝 ASSISTANT</div>
+                    <div class="bg-white/60 backdrop-blur-sm border border-white/40 border-l-4 border-l-indigo-600 p-4 rounded-lg">
+                        <div class="font-bold text-indigo-600 mb-2">🤝 ASSISTANT</div>
                         <p class="text-sm text-gray-700 mb-2"><strong>Scope:</strong> Operational support</p>
                         <p class="text-sm text-gray-600">Front-desk operations: student records, attendance corrections, fee collection, facility requests, announcements.</p>
                     </div>
                     <!-- TEACHER -->
-                    <div class="bg-white border-l-4 border-yellow-600 p-4 rounded">
-                        <div class="font-bold text-yellow-600 mb-2">👨‍🏫 TEACHER</div>
+                    <div class="bg-white/60 backdrop-blur-sm border border-white/40 border-l-4 border-l-indigo-600 p-4 rounded-lg">
+                        <div class="font-bold text-indigo-600 mb-2">👨‍🏫 TEACHER</div>
                         <p class="text-sm text-gray-700 mb-2"><strong>Scope:</strong> Assigned classes</p>
                         <p class="text-sm text-gray-600">Manage attendance, assign homework, create exams, publish results, communicate with parents and staff.</p>
                     </div>
                     <!-- PARENT -->
-                    <div class="bg-white border-l-4 border-red-600 p-4 rounded">
-                        <div class="font-bold text-red-600 mb-2">👨‍👩‍👧 PARENT</div>
+                    <div class="bg-white/60 backdrop-blur-sm border border-white/40 border-l-4 border-l-indigo-600 p-4 rounded-lg">
+                        <div class="font-bold text-indigo-600 mb-2">👨‍👩‍👧 PARENT</div>
                         <p class="text-sm text-gray-700 mb-2"><strong>Scope:</strong> All children in same school</p>
                         <p class="text-sm text-gray-600"><strong>Login:</strong> Parent account (no student logins). Switch between children to view ALL data: attendance, homework, results, timetable, fees, transport. Can see multiple children's complete information.</p>
                     </div>
@@ -462,31 +735,31 @@
             </div>
 
             <!-- Master Entity Relationship Summary -->
-            <div class="mt-10 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-8">
+            <div class="mt-10 bg-gradient-to-r from-white via-gray-50 to-white border border-gray-100 rounded-lg p-8">
                 <h3 class="text-xl font-bold text-gray-900 mb-4">🔗 Master Relationships</h3>
                 <div class="space-y-3 text-sm text-gray-700">
                     <div class="flex items-start gap-3">
-                        <span class="font-mono font-bold text-blue-600">schools</span>
+                        <span class="font-mono font-bold text-indigo-600">schools</span>
                         <span class="text-gray-600">→ Root master table. All data is scoped by school_id for multi-tenancy.</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <span class="font-mono font-bold text-blue-600">users</span>
+                        <span class="font-mono font-bold text-indigo-600">users</span>
                         <span class="text-gray-600">→ Connects to schools via school_id. Roles via user_roles table (many-to-many).</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <span class="font-mono font-bold text-purple-600">students</span>
+                        <span class="font-mono font-bold text-indigo-600">students</span>
                         <span class="text-gray-600">→ FK to schools & classes. Each student belongs to one school (tenant isolation via school_id).</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <span class="font-mono font-bold text-emerald-600">classes</span>
+                        <span class="font-mono font-bold text-indigo-600">classes</span>
                         <span class="text-gray-600">→ FK to schools & academic_years. Represents a specific grade/section in a school.</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <span class="font-mono font-bold text-amber-600">invoices</span>
+                        <span class="font-mono font-bold text-indigo-600">invoices</span>
                         <span class="text-gray-600">→ FK to students & fee_structures. Every invoice links back to a student (which links to school).</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <span class="font-mono font-bold text-rose-600">parent_id (in students)</span>
+                        <span class="font-mono font-bold text-indigo-600">parent_id (in students)</span>
                         <span class="text-gray-600">→ FK to users(id). Connects student to parent account. Parents LOGIN via user account and see ALL their children's data. NO separate student logins.</span>
                     </div>
                 </div>
@@ -503,12 +776,12 @@
             </div>
 
             <div class="flow-tabs">
-                <button class="flow-tab-btn active" onclick="showFlowTab('academic')">🎓 Academic Flow</button>
-                <button class="flow-tab-btn" onclick="showFlowTab('billing')">💳 Billing Flow</button>
-                <button class="flow-tab-btn" onclick="showFlowTab('communication')">💬 Communication Flow</button>
-                <button class="flow-tab-btn" onclick="showFlowTab('rbac')">🔐 RBAC Access Control</button>
-                <button class="flow-tab-btn" onclick="showFlowTab('attendance')">📅 Attendance Flow</button>
-                <button class="flow-tab-btn" onclick="showFlowTab('roles')">👥 Role Access Matrix</button>
+                <button class="flow-tab-btn active" onclick="showFlowTab('academic', this)">🎓 Academic Flow</button>
+                <button class="flow-tab-btn" onclick="showFlowTab('billing', this)">💳 Billing Flow</button>
+                <button class="flow-tab-btn" onclick="showFlowTab('communication', this)">💬 Communication Flow</button>
+                <button class="flow-tab-btn" onclick="showFlowTab('rbac', this)">🔐 RBAC Access Control</button>
+                <button class="flow-tab-btn" onclick="showFlowTab('attendance', this)">📅 Attendance Flow</button>
+                <button class="flow-tab-btn" onclick="showFlowTab('roles', this)">👥 Role Access Matrix</button>
             </div>
 
             <!-- Academic Flow -->
@@ -642,23 +915,23 @@
                 <div class="flow-row" style="margin-top: 20px; gap: 20px;">
                     <div style="flex: 1; text-align: center;">
                         <div class="flow-box primary" style="margin-bottom: 10px;">SUPER_ADMIN</div>
-                        <p style="font-size: 12px; color: #475569;">All Schools<br>All Features</p>
+                        <p style="font-size: 12px; color: #6B7280;">All Schools<br>All Features</p>
                     </div>
                     <div style="flex: 1; text-align: center;">
                         <div class="flow-box primary" style="margin-bottom: 10px;">SCHOOL_ADMIN</div>
-                        <p style="font-size: 12px; color: #475569;">One School<br>Assign Roles</p>
+                        <p style="font-size: 12px; color: #6B7280;">One School<br>Assign Roles</p>
                     </div>
                     <div style="flex: 1; text-align: center;">
                         <div class="flow-box secondary" style="margin-bottom: 10px;">ASSISTANT</div>
-                        <p style="font-size: 12px; color: #475569;">Front-Desk<br>Operations</p>
+                        <p style="font-size: 12px; color: #6B7280;">Front-Desk<br>Operations</p>
                     </div>
                     <div style="flex: 1; text-align: center;">
                         <div class="flow-box secondary" style="margin-bottom: 10px;">TEACHER</div>
-                        <p style="font-size: 12px; color: #475569;">Academic<br>Operations</p>
+                        <p style="font-size: 12px; color: #6B7280;">Academic<br>Operations</p>
                     </div>
                     <div style="flex: 1; text-align: center;">
                         <div class="flow-box warning" style="margin-bottom: 10px;">PARENT</div>
-                        <p style="font-size: 12px; color: #475569;">Manage<br>All Children</p>
+                        <p style="font-size: 12px; color: #6B7280;">Manage<br>All Children</p>
                     </div>
                 </div>
             </div>
@@ -695,86 +968,86 @@
 
             <!-- Role Access Matrix -->
             <div id="roles" class="flow-diagram">
-                <h3 style="text-align: center; margin-bottom: 28px; color: #0F172A; font-size: 24px; font-weight: 700;">📊 Role-Based Access Matrix</h3>
-                <p style="text-align: center; margin-bottom: 20px; color: #64748B; font-size: 14px;">Complete access control overview - What each role can do across all features</p>
+                <h3 style="text-align: center; margin-bottom: 28px; color: #1F2937; font-size: 24px; font-weight: 700;">📊 Role-Based Access Matrix</h3>
+                <p style="text-align: center; margin-bottom: 20px; color: #6B7280; font-size: 14px;">Complete access control overview - What each role can do across all features</p>
 
-                <div style="overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); border: 1px solid #E2E8F0;">
+                <div style="overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15);">
                     <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                         <thead>
-                            <tr style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);">
+                            <tr style="background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);">
                                 <th style="padding: 16px 18px; text-align: left; font-weight: 700; color: white; border: none;">Feature / Module</th>
-                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #3B82F6, #1E40AF); color: white; font-weight: 700; border: none;">SUPER_ADMIN</th>
+                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #6366F1, #4F46E5); color: white; font-weight: 700; border: none;">SUPER_ADMIN</th>
                                 <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #6366F1, #4F46E5); color: white; font-weight: 700; border: none;">SCHOOL_ADMIN</th>
-                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #10B981, #047857); color: white; font-weight: 700; border: none;">ASSISTANT</th>
-                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #F59E0B, #D97706); color: white; font-weight: 700; border: none;">TEACHER</th>
-                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #EC407A, #C2185B); color: white; font-weight: 700; border: none;">PARENT</th>
+                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #6366F1, #4F46E5); color: white; font-weight: 700; border: none;">ASSISTANT</th>
+                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #6366F1, #4F46E5); color: white; font-weight: 700; border: none;">TEACHER</th>
+                                <th style="padding: 16px 14px; text-align: center; background: linear-gradient(135deg, #6366F1, #4F46E5); color: white; font-weight: 700; border: none;">PARENT</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Dashboard</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ School</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Ops</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Class</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Dashboard</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ School</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Ops</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Class</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Attendance</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ View/Edit</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ View/Edit</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Adjust</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Attendance</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ View/Edit</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ View/Edit</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Adjust</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Exams & Results</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">❌</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Exams & Results</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">❌</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Homework</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">❌</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Homework</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">❌</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Fees & Payments</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Collect</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Fees & Payments</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Collect</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Leave Management</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Approve</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">❌</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ View</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Apply</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">❌</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Leave Management</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Approve</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">❌</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ View</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Apply</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">❌</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Announcements</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Send All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Send School</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Send Class</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ View All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Announcements</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Send All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Send School</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Send Class</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ View All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Transport/Bus</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ View All Children</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Transport/Bus</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ View All Children</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #E2E8F0; transition: background-color 0.2s ease;">
-                                <td style="padding: 14px 18px; font-weight: 600; color: #1E293B; border: none;">Facilities Booking</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Approve All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Approve All</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">✅ Request</td>
-                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #334155;">❌ Not applicable</td>
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.2s ease;">
+                                <td style="padding: 14px 18px; font-weight: 600; color: #1F2937; border: none;">Facilities Booking</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Approve All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Approve All</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">✅ Request</td>
+                                <td style="border: none; padding: 14px 12px; text-align: center; font-weight: 500; color: #6B7280;">❌ Not applicable</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1420,6 +1693,9 @@
                 const card = createTableCard(tableName, tableInfo);
                 container.appendChild(card);
             });
+
+            // Clear any open tooltips when filtering
+            hideTooltip();
         }
 
         function createTableCard(tableName, tableInfo) {
@@ -1591,18 +1867,37 @@
             // Add green border to indicate locked state
             tooltip.classList.add('tooltip-locked');
 
-            // Position tooltip
+            // Position tooltip on the left side with animation
             const rect = event.target.getBoundingClientRect();
-            tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
-            tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+            const padding = 20;
+            const tooltipHeight = tooltip.offsetHeight;
+            const elementHeight = rect.height;
 
-            // Adjust if tooltip goes off-screen
-            if (tooltip.offsetLeft < 10) {
-                tooltip.style.left = '10px';
+            // Position on left side with some padding
+            let leftPos = rect.left - tooltip.offsetWidth - padding;
+            // Vertically center with the clicked element
+            let topPos = rect.top + (elementHeight / 2) - (tooltipHeight / 2);
+
+            // If tooltip would go off-screen on left, position it on the right instead
+            if (leftPos < 10) {
+                leftPos = rect.right + padding;
             }
-            if (tooltip.offsetLeft + tooltip.offsetWidth > window.innerWidth - 10) {
-                tooltip.style.left = (window.innerWidth - tooltip.offsetWidth - 10) + 'px';
+
+            // Ensure tooltip doesn't go off right edge
+            if (leftPos + tooltip.offsetWidth > window.innerWidth - 10) {
+                leftPos = window.innerWidth - tooltip.offsetWidth - 10;
             }
+
+            // Ensure tooltip doesn't go off top/bottom
+            if (topPos < 10) {
+                topPos = 10;
+            }
+            if (topPos + tooltipHeight > window.innerHeight - 10) {
+                topPos = window.innerHeight - tooltipHeight - 10;
+            }
+
+            tooltip.style.left = leftPos + 'px';
+            tooltip.style.top = topPos + 'px';
 
             // Highlight all instances of this column
             document.querySelectorAll('.col-name').forEach(el => {
@@ -1629,9 +1924,15 @@
                 const colName = colElement.textContent;
                 const usageCount = columnUsageMap[colName]?.length || 0;
 
+                // Skip if already has listener
+                if (colElement.dataset.listenerAdded === 'true') {
+                    return;
+                }
+
                 if (usageCount > 1) {
                     colElement.style.cursor = 'pointer';
-                    colElement.addEventListener('click', (e) => {
+                    colElement.dataset.listenerAdded = 'true';
+                    colElement.addEventListener('click', function clickHandler(e) {
                         e.stopPropagation();
                         showTooltip(e, colName);
                     });
@@ -1662,7 +1963,12 @@
         };
 
         // Data Flow Tab Management
-        function showFlowTab(tabName) {
+        function showFlowTab(tabName, button) {
+            // If button not passed, try to get it from event or find it
+            if (!button && event && event.target) {
+                button = event.target;
+            }
+
             // Hide all diagrams
             document.querySelectorAll('.flow-diagram').forEach(diagram => {
                 diagram.classList.remove('active');
@@ -1674,11 +1980,46 @@
             });
 
             // Show selected diagram
-            document.getElementById(tabName).classList.add('active');
+            const diagram = document.getElementById(tabName);
+            if (diagram) {
+                diagram.classList.add('active');
+            }
 
             // Add active class to clicked button
-            event.target.classList.add('active');
+            if (button) {
+                button.classList.add('active');
+            }
         }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.getElementById('themeToggle');
+
+            body.classList.toggle('dark-mode');
+
+            if (body.classList.contains('dark-mode')) {
+                toggle.textContent = '🌙 Dark';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                toggle.textContent = '☀️ Light';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const body = document.body;
+            const toggle = document.getElementById('themeToggle');
+
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                toggle.textContent = '🌙 Dark';
+            } else {
+                toggle.textContent = '☀️ Light';
+            }
+        });
     </script>
 </body>
 </html>
