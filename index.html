@@ -849,7 +849,7 @@
 
         .table-node {
             position: absolute;
-            width: 200px;
+            width: 270px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -881,10 +881,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 10px;
-            font-size: 12px;
+            padding: 5px 8px;
+            font-size: 11px;
             border-bottom: 1px solid #f1f5f9;
             transition: background-color 0.2s ease;
+            line-height: 1.2;
         }
         .field-row:last-child { border-bottom: none; }
 
@@ -892,11 +893,11 @@
         .id-field {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 4px 8px;
-            border-radius: 6px;
+            gap: 4px;
+            padding: 3px 6px;
+            border-radius: 5px;
             font-weight: 600;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -935,19 +936,13 @@
             background-color: rgba(253, 224, 71, 0.45) !important;
             border-radius: 6px;
             border-left: 3px solid #FBBF24;
-            animation: highlightPulse 0.3s ease-in-out;
             font-weight: 500;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
 
         .field-row.id-match.fk-match {
             background-color: rgba(96, 165, 250, 0.45) !important;
             border-left-color: #60A5FA;
-        }
-
-        @keyframes highlightPulse {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(2px); }
-            100% { transform: translateX(0); }
         }
 
         .id-field.active-highlight {
@@ -1046,13 +1041,69 @@
         body.dark-mode .field-row.id-match {
             background-color: rgba(217, 119, 6, 0.45) !important;
             border-left: 3px solid #D97706;
-            animation: highlightPulse 0.3s ease-in-out;
             font-weight: 500;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
 
         body.dark-mode .field-row.id-match.fk-match {
             background-color: rgba(2, 132, 199, 0.45) !important;
             border-left-color: #0284C7;
+        }
+
+        /* Dark mode architecture explanation boxes */
+        body.dark-mode .bg-indigo-50 {
+            background: rgba(67, 56, 202, 0.15) !important;
+        }
+
+        body.dark-mode .text-indigo-800,
+        body.dark-mode .text-indigo-900 {
+            color: #C7D2FE !important;
+        }
+
+        body.dark-mode .bg-blue-50 {
+            background: rgba(59, 130, 246, 0.15) !important;
+        }
+
+        body.dark-mode .text-blue-800,
+        body.dark-mode .text-blue-900 {
+            color: #BFDBFE !important;
+        }
+
+        body.dark-mode .bg-purple-50 {
+            background: rgba(139, 92, 246, 0.15) !important;
+        }
+
+        body.dark-mode .text-purple-800,
+        body.dark-mode .text-purple-900 {
+            color: #DDD6FE !important;
+        }
+
+        body.dark-mode .bg-green-50 {
+            background: rgba(16, 185, 129, 0.15) !important;
+        }
+
+        body.dark-mode .text-green-800,
+        body.dark-mode .text-green-900 {
+            color: #A7F3D0 !important;
+        }
+
+        body.dark-mode .bg-amber-50 {
+            background: rgba(245, 158, 11, 0.15) !important;
+        }
+
+        body.dark-mode .text-amber-800,
+        body.dark-mode .text-amber-900 {
+            color: #FCD34D !important;
+        }
+
+        body.dark-mode .border-l-indigo-600 { border-left-color: #818CF8 !important; }
+        body.dark-mode .border-l-blue-600 { border-left-color: #60A5FA !important; }
+        body.dark-mode .border-l-purple-600 { border-left-color: #A78BFA !important; }
+        body.dark-mode .border-l-green-600 { border-left-color: #34D399 !important; }
+        body.dark-mode .border-l-amber-600 { border-left-color: #FBBF24 !important; }
+
+        body.dark-mode .bg-white {
+            background: rgba(31, 41, 55, 0.6) !important;
         }
 
         /* Vue transitions */
@@ -1092,12 +1143,102 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
                 <h2 class="text-2xl font-bold text-gray-900">Section 1: Entity Relationship Diagram</h2>
-                <p class="mt-4 text-gray-600 max-w-3xl">
-                    Interactive explorer for the SchoolNest database architecture. Drag tables to rearrange, click to view details about each table's role in the system. 8 core tables showing relationships, primary/foreign keys, and multi-tenant data isolation.
-                </p>
+                <div class="mt-4 space-y-3">
+                    <p class="text-gray-600 max-w-4xl">
+                        <strong>Flow Overview:</strong> SchoolNest is built on a <strong>multi-tenant architecture</strong> where <strong>Schools</strong> are the root organization. Every school manages users with role-based permissions (SUPER_ADMIN → SCHOOL_ADMIN → ASSISTANT → TEACHER → PARENT), handles academic operations (Classes → Students → Homework → Attendance), and manages billing (Invoices). Parents login once and can switch between children to view all their data—no separate student logins needed.
+                    </p>
+                    <p class="text-gray-600 max-w-4xl">
+                        <strong>The 8 Core Tables:</strong> 🏫 Schools (root master) → 👤 Users (authentication) → 👨‍👩‍👧 Parents (guardians) → 📚 Classes (academic units) → 👨‍🎓 Students (enrolled learners) → 💰 Invoices (billing) → 📅 Attendance (tracking) → 📝 Homework (assignments). All connected through foreign keys showing how data flows through the system.
+                    </p>
+                    <p class="text-gray-600 max-w-4xl text-sm">
+                        <strong>Interactive Features:</strong> Drag tables to rearrange the diagram. Click any table to view its role, fields, and operations. Hover over any ID field (marked with 🔑 for Primary Keys or 🔗 for Foreign Keys) to highlight all connected tables and see the relationship flow.
+                    </p>
+                </div>
             </div>
 
             <div id="erd-app" class="erd-explorer-container"></div>
+
+            <!-- Architecture Explanation Section -->
+            <div class="mt-12 bg-white/60 backdrop-blur-sm border border-white/40 rounded-lg p-8" style="outline: 1px solid rgba(107, 114, 128, 0.08);">
+                <h3 class="text-lg font-bold text-gray-900 mb-6">🏗️ Architecture Overview & Design Rationale</h3>
+
+                <div class="space-y-6">
+                    <!-- Multi-Tenancy -->
+                    <div class="border-l-4 border-l-indigo-600 bg-indigo-50 p-4 rounded">
+                        <h4 class="font-bold text-indigo-900 mb-2">Multi-Tenancy with Schools as Root</h4>
+                        <p class="text-sm text-indigo-800 mb-3">
+                            <strong>Why?</strong> Each school operates independently with its own users, students, classes, and billing. By making <code class="bg-white px-2 py-1 rounded">schools</code> the root master table, every single record in the system is scoped to a specific school via the <code class="bg-white px-2 py-1 rounded">school_id</code> foreign key.
+                        </p>
+                        <p class="text-sm text-indigo-800">
+                            <strong>Benefits:</strong> Data isolation, security, scalability, and the ability to support multiple independent school organizations on one platform.
+                        </p>
+                    </div>
+
+                    <!-- Role-Based Access Control -->
+                    <div class="border-l-4 border-l-blue-600 bg-blue-50 p-4 rounded">
+                        <h4 class="font-bold text-blue-900 mb-2">5-Tier Role-Based Access Control (RBAC)</h4>
+                        <p class="text-sm text-blue-800 mb-3">
+                            <strong>Design:</strong> 🔐 SUPER_ADMIN → 🏫 SCHOOL_ADMIN → 🤝 ASSISTANT → 👨‍🏫 TEACHER → 👨‍👩‍👧 PARENT
+                        </p>
+                        <p class="text-sm text-blue-800">
+                            Each role has specific permissions and visibility. Users are linked to roles via the <code class="bg-white px-2 py-1 rounded">user_roles</code> many-to-many table, allowing flexible permission management. Parents login as a single parent account but can switch between children to access all their data.
+                        </p>
+                    </div>
+
+                    <!-- Three Core Flows -->
+                    <div class="border-l-4 border-l-purple-600 bg-purple-50 p-4 rounded">
+                        <h4 class="font-bold text-purple-900 mb-3">Three Core Business Flows</h4>
+                        <div class="space-y-3 text-sm text-purple-800">
+                            <div>
+                                <strong class="block mb-1">📚 Academic Flow:</strong>
+                                Schools → Classes → Students → Homework → Attendance → Results. Teachers assign homework and track attendance; parents and students view progress.
+                            </div>
+                            <div>
+                                <strong class="block mb-1">💳 Billing Flow:</strong>
+                                Schools define fee structures → Invoices generated per student → Parents/admins track payments. Completely isolated per school for financial accuracy.
+                            </div>
+                            <div>
+                                <strong class="block mb-1">👥 User Management Flow:</strong>
+                                SUPER_ADMIN creates schools → SCHOOL_ADMIN manages users and assigns roles → Users login with specific permissions based on their role and assigned resources.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Relational Integrity -->
+                    <div class="border-l-4 border-l-green-600 bg-green-50 p-4 rounded">
+                        <h4 class="font-bold text-green-900 mb-2">Referential Integrity & Constraints</h4>
+                        <p class="text-sm text-green-800">
+                            All relationships are enforced through foreign keys (FK):
+                        </p>
+                        <ul class="text-sm text-green-800 mt-2 space-y-1 ml-4">
+                            <li>🔗 <strong>school_id</strong> appears in every data table - ensures tenant isolation</li>
+                            <li>🔗 <strong>user_id</strong> links users to their roles and data access</li>
+                            <li>🔗 <strong>class_id</strong> groups students and organizes homework</li>
+                            <li>🔗 <strong>parent_id</strong> creates guardian relationships without student logins</li>
+                        </ul>
+                    </div>
+
+                    <!-- Why This Design -->
+                    <div class="border-l-4 border-l-amber-600 bg-amber-50 p-4 rounded">
+                        <h4 class="font-bold text-amber-900 mb-2">✨ Key Design Advantages</h4>
+                        <ul class="text-sm text-amber-800 space-y-2 ml-4">
+                            <li>✅ <strong>Scalability:</strong> Add unlimited schools without schema changes</li>
+                            <li>✅ <strong>Security:</strong> Row-level security via school_id ensures data isolation</li>
+                            <li>✅ <strong>Simplicity:</strong> No student logins = simplified parent access and fewer credentials</li>
+                            <li>✅ <strong>Flexibility:</strong> Users can have multiple roles with different permissions</li>
+                            <li>✅ <strong>Auditability:</strong> All operations scoped to specific school and user</li>
+                            <li>✅ <strong>Maintainability:</strong> Clear relationships and consistent FK patterns</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Hover Instructions -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-xs text-gray-500">
+                        💡 <strong>Pro Tip:</strong> In the ERD above, hover over any ID field (marked with 🔑 or 🔗) to see all connections across tables. This reveals which tables are related and how data flows between them.
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -2632,11 +2773,11 @@
                          :style="{ transform: 'translate(' + table.x + 'px, ' + table.y + 'px)', borderColor: table.color }"
                          @mousedown.stop="startDrag(\$event, table)"
                          @click.stop="selectedTable = table">
-                        <div class="px-4 py-3 rounded-t-[10px] flex items-center gap-2 text-white" :style="{ backgroundColor: table.color }">
-                            <span class="text-lg">{{ table.icon }}</span>
-                            <span class="font-bold text-sm uppercase tracking-wider">{{ table.name }}</span>
+                        <div class="px-3 py-2 rounded-t-[10px] flex items-center gap-2 text-white" :style="{ backgroundColor: table.color }">
+                            <span class="text-base">{{ table.icon }}</span>
+                            <span class="font-bold text-xs uppercase tracking-wider">{{ table.name }}</span>
                         </div>
-                        <div class="py-2">
+                        <div class="py-1">
                             <div v-for="field in table.fields" :key="field.name"
                                  class="field-row"
                                  :class="{ 'id-match': hoveredFieldName === field.name, 'fk-match': field.fk && hoveredFieldName === field.name }"
