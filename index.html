@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database Schema Design</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
         /* CSS Variables for Theme */
         :root {
@@ -198,6 +199,32 @@
 
         body.dark-mode table tbody td {
             color: #E5E7EB !important;
+        }
+
+        /* Dark mode header - glassmorphic */
+        body.dark-mode header {
+            background: rgba(31, 41, 55, 0.6) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.dark-mode header h1 {
+            color: #F3F4F6 !important;
+        }
+
+        body.dark-mode header p {
+            color: #9CA3AF !important;
+        }
+
+        /* Heading styles - modern, minimal */
+        h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+
+        body.dark-mode h4 {
+            color: #F3F4F6 !important;
         }
 
         /* Modern Glassmorphism Design */
@@ -478,6 +505,136 @@
             transform: translateY(0);
         }
 
+        /* Schema Diagram Styles */
+        .schema-diagram-section {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            outline: 1px solid rgba(107, 114, 128, 0.06);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 95%;
+            overflow-x: auto;
+        }
+        body.dark-mode .schema-diagram-section {
+            background: rgba(31, 41, 55, 0.6);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .schema-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1F2937;
+        }
+        body.dark-mode .schema-title {
+            color: #F3F4F6;
+        }
+
+        .erd-diagram {
+            width: 100%;
+            height: auto;
+            min-height: 700px;
+            margin: 20px 0;
+        }
+
+        .schema-diagram {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 300px;
+        }
+
+        .schema-entity {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid #E5E7EB;
+            position: relative;
+        }
+        body.dark-mode .schema-entity {
+            background: rgba(31, 41, 55, 0.8);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .entity-name {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        .entity-name.schools { border-color: #8B5CF6; color: #8B5CF6; }
+        .entity-name.users { border-color: #3B82F6; color: #3B82F6; }
+        .entity-name.students { border-color: #EC4899; color: #EC4899; }
+        .entity-name.classes { border-color: #F59E0B; color: #F59E0B; }
+        .entity-name.parent { border-color: #10B981; color: #10B981; }
+
+        body.dark-mode .entity-name.schools { color: #D8B4FE; }
+        body.dark-mode .entity-name.users { color: #93C5FD; }
+        body.dark-mode .entity-name.students { color: #F472B6; }
+        body.dark-mode .entity-name.classes { color: #FCD34D; }
+        body.dark-mode .entity-name.parent { color: #6EE7B7; }
+
+        .entity-field {
+            font-size: 12px;
+            margin-bottom: 6px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .id-pk { background: rgba(139, 92, 246, 0.1); color: #7C3AED; font-weight: 600; }
+        .id-fk { background: rgba(59, 130, 246, 0.1); color: #2563EB; font-weight: 600; }
+        .id-regular { background: rgba(107, 114, 128, 0.1); color: #4B5563; }
+
+        body.dark-mode .id-pk { background: rgba(168, 85, 247, 0.2); color: #D8B4FE; }
+        body.dark-mode .id-fk { background: rgba(59, 130, 246, 0.2); color: #93C5FD; }
+        body.dark-mode .id-regular { background: rgba(209, 213, 219, 0.1); color: #D1D5DB; }
+
+        .schema-arrow {
+            font-size: 24px;
+            color: #6366F1;
+            opacity: 0.6;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(107, 114, 128, 0.2);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 12px;
+        }
+        body.dark-mode .legend {
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .badge-pk { background: #8B5CF6; }
+        .badge-fk { background: #3B82F6; }
+        .badge-regular { background: #9CA3AF; }
+
         /* Data Flow Section Styles */
         .data-flow-section {
             background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
@@ -674,18 +831,161 @@
         #roles tbody tr:first-child {
             border-top-left-radius: 8px;
         }
+
+        /* Interactive ERD Explorer Styles */
+        .erd-explorer-container {
+            width: 100%;
+            height: 700px;
+            position: relative;
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 30px 30px;
+            cursor: grab;
+            border-radius: 12px;
+            border: 1px solid rgba(107, 114, 128, 0.15);
+            overflow: hidden;
+            background-color: #f8fafc;
+        }
+        .erd-explorer-container:active { cursor: grabbing; }
+
+        .table-node {
+            position: absolute;
+            width: 240px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            cursor: move;
+            user-select: none;
+            z-index: 10;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .table-node:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .table-node.selected {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .connector-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .field-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .field-row:last-child { border-bottom: none; }
+
+        .detail-inspector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid rgba(107, 114, 128, 0.15);
+            z-index: 50;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        body.dark-mode .erd-explorer-container {
+            background-color: rgba(31, 41, 55, 0.4);
+            background-image: radial-gradient(rgba(255,255,255,0.1) 0.5px, transparent 0.5px);
+        }
+
+        body.dark-mode .table-node {
+            background: rgba(31, 41, 55, 0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode .table-node:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        body.dark-mode .field-row {
+            border-bottom-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-mode .detail-inspector {
+            background: rgba(31, 41, 55, 0.9);
+            color: #F3F4F6;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .detail-inspector h2 {
+            color: #F3F4F6;
+        }
+
+        body.dark-mode .detail-inspector p {
+            color: #D1D5DB;
+        }
+
+        /* Vue transitions */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+
+        /* Header hide on scroll */
+        header {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        header.hide-header {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">☀️ Light</button>
+    <!-- Header -->
+    <header id="main-header" class="sticky top-0 z-50 backdrop-blur-md" style="background: rgba(255, 255, 255, 0.7); border-bottom: 1px solid rgba(107, 114, 128, 0.15); outline: 1px solid rgba(107, 114, 128, 0.06);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">🏫 SchoolNest Database</h1>
+                <p class="mt-1 text-sm text-gray-600">Schema Documentation</p>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">☀️ Light</button>
+        </div>
+    </header>
 
-    <!-- Section: Database Schema -->
+    <!-- Section 1: Entity Relationship Diagram -->
+    <section id="erd-diagram" class="py-12 bg-gradient-to-br from-white via-gray-50 to-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900">Section 1: Entity Relationship Diagram</h2>
+                <p class="mt-4 text-gray-600 max-w-3xl">
+                    Interactive explorer for the SchoolNest database architecture. Drag tables to rearrange, click to view details about each table's role in the system. 8 core tables showing relationships, primary/foreign keys, and multi-tenant data isolation.
+                </p>
+            </div>
+
+            <div id="erd-app" class="erd-explorer-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 2: Database Schema -->
     <section id="db-schema" class="py-12 bg-gradient-to-br from-white via-gray-50 to-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-3xl font-bold text-gray-900">Database Schema Design</h2>
+                    <h2 class="text-2xl font-bold text-gray-900">Section 2: Database Schema Design</h2>
                 </div>
                 <p class="mt-4 text-gray-600 max-w-3xl">
                     Complete relational database structure for SchoolNest showing all tables, columns, constraints, and relationships across services.
@@ -709,7 +1009,7 @@
 
             <!-- Role Definitions -->
             <div class="mt-10 bg-gradient-to-r from-white via-gray-50 to-white border-1 border-gray-100 rounded-lg p-8">
-                <h3 class="text-xl font-bold text-gray-900 mb-6">👥 Role Definitions & Access Levels</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-6">👥 Role Definitions & Access Levels</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- SUPER_ADMIN -->
                     <div class="bg-white/60 backdrop-blur-sm border border-white/40 border-l-4 border-l-indigo-600 p-4 rounded-lg">
@@ -746,7 +1046,7 @@
 
             <!-- Master Entity Relationship Summary -->
             <div class="mt-10 bg-gradient-to-r from-white via-gray-50 to-white border border-gray-100 rounded-lg p-8">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">🔗 Master Relationships</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4">🔗 Master Relationships</h3>
                 <div class="space-y-3 text-sm text-gray-700">
                     <div class="flex items-start gap-3">
                         <span class="font-mono font-bold text-indigo-600">schools</span>
@@ -777,11 +1077,11 @@
         </div>
     </section>
 
-    <!-- Data Flow & Process Explanation Section -->
+    <!-- Section 3: Data Flow & System Architecture -->
     <section class="data-flow-section">
         <div class="flow-container">
             <div class="flow-title">
-                <h2>📊 Data Flow & System Architecture</h2>
+                <h2 class="text-2xl font-bold text-gray-900">Section 3: 📊 Data Flow & System Architecture</h2>
                 <p>Interactive visualization showing how data flows through SchoolNest from students to reporting, and role-based access control</p>
             </div>
 
@@ -978,7 +1278,7 @@
 
             <!-- Role Access Matrix -->
             <div id="roles" class="flow-diagram">
-                <h3 style="text-align: center; margin-bottom: 28px; color: #1F2937; font-size: 24px; font-weight: 700;">📊 Role-Based Access Matrix</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-7 text-center">📊 Role-Based Access Matrix</h3>
                 <p style="text-align: center; margin-bottom: 20px; color: #6B7280; font-size: 14px;">Complete access control overview - What each role can do across all features</p>
 
                 <div style="overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15);">
@@ -2030,6 +2330,195 @@
                 toggle.textContent = '☀️ Light';
             }
         });
+
+        // Hide header on scroll
+        const header = document.getElementById('main-header');
+        let lastScrollTop = 0;
+        let scrollTimeout;
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Hide header when scrolling down, show when scrolling up
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                // Scrolling down
+                header.classList.add('hide-header');
+            } else {
+                // Scrolling up or at top
+                header.classList.remove('hide-header');
+            }
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, false);
+
+        // Initialize Interactive ERD Explorer with Vue 3
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const tables = ref([
+                    { id: 'schools', name: 'Schools', icon: '🏫', x: 50, y: 50, color: '#8B5CF6', description: 'The root multi-tenancy table. All data scoped by school_id.', ops: ['Onboard institution', 'Manage settings', 'Billing management'], fields: [
+                        { name: 'school_id', type: 'INT PK', pk: true },
+                        { name: 'name', type: 'VARCHAR' },
+                        { name: 'email', type: 'VARCHAR' },
+                        { name: 'phone', type: 'VARCHAR' },
+                        { name: 'address', type: 'TEXT' }
+                    ]},
+                    { id: 'users', name: 'Users', icon: '👤', x: 350, y: 50, color: '#3B82F6', description: 'Authentication and profiles for all participants.', ops: ['Password reset', 'Role assignment', 'Activity tracking'], fields: [
+                        { name: 'user_id', type: 'INT PK', pk: true },
+                        { name: 'school_id', type: 'INT FK', fk: true },
+                        { name: 'email', type: 'VARCHAR' },
+                        { name: 'first_name', type: 'VARCHAR' },
+                        { name: 'is_active', type: 'BOOL' }
+                    ]},
+                    { id: 'parents', name: 'Parents', icon: '👨‍👩‍👧', x: 650, y: 50, color: '#10B981', description: 'Parent profiles linked to user accounts.', ops: ['Link student', 'Update contact', 'Track children'], fields: [
+                        { name: 'parent_id', type: 'INT PK', pk: true },
+                        { name: 'user_id', type: 'INT FK', fk: true },
+                        { name: 'relationship', type: 'VARCHAR' },
+                        { name: 'guardian_since', type: 'DATE' }
+                    ]},
+                    { id: 'classes', name: 'Classes', icon: '📚', x: 200, y: 350, color: '#F59E0B', description: 'Academic sections within grades.', ops: ['Create class', 'Assign teachers', 'Grade setup'], fields: [
+                        { name: 'class_id', type: 'INT PK', pk: true },
+                        { name: 'school_id', type: 'INT FK', fk: true },
+                        { name: 'name', type: 'VARCHAR' },
+                        { name: 'grade', type: 'INT' },
+                        { name: 'section', type: 'VARCHAR' }
+                    ]},
+                    { id: 'students', name: 'Students', icon: '👨‍🎓', x: 500, y: 350, color: '#EC4899', description: 'Core student records with academic links.', ops: ['Enrollment', 'Class transfer', 'Graduation'], fields: [
+                        { name: 'student_id', type: 'INT PK', pk: true },
+                        { name: 'school_id', type: 'INT FK', fk: true },
+                        { name: 'class_id', type: 'INT FK', fk: true },
+                        { name: 'parent_id', type: 'INT FK', fk: true },
+                        { name: 'first_name', type: 'VARCHAR' }
+                    ]},
+                    { id: 'invoices', name: 'Invoices', icon: '💰', x: 50, y: 600, color: '#DC2626', description: 'Fee management and billing history.', ops: ['Generate fees', 'Payment tracking', 'Late fee calc'], fields: [
+                        { name: 'invoice_id', type: 'INT PK', pk: true },
+                        { name: 'student_id', type: 'INT FK', fk: true },
+                        { name: 'amount', type: 'DECIMAL' }
+                    ]},
+                    { id: 'attendance', name: 'Attendance', icon: '📅', x: 350, y: 600, color: '#6366F1', description: 'Daily attendance tracking.', ops: ['Mark attendance', 'Bulk entry', 'Reports'], fields: [
+                        { name: 'attend_id', type: 'INT PK', pk: true },
+                        { name: 'student_id', type: 'INT FK', fk: true },
+                        { name: 'date', type: 'DATE' },
+                        { name: 'status', type: 'VARCHAR' }
+                    ]},
+                    { id: 'homework', name: 'Homework', icon: '📝', x: 650, y: 600, color: '#EC4899', description: 'Class assignments and submissions.', ops: ['Publish work', 'Grade submissions', 'Deadline track'], fields: [
+                        { name: 'homework_id', type: 'INT PK', pk: true },
+                        { name: 'class_id', type: 'INT FK', fk: true },
+                        { name: 'title', type: 'VARCHAR' },
+                        { name: 'due_date', type: 'DATE' }
+                    ]}
+                ]);
+
+                const connections = [
+                    { from: 'schools', to: 'users' },
+                    { from: 'schools', to: 'classes' },
+                    { from: 'users', to: 'parents' },
+                    { from: 'classes', to: 'students' },
+                    { from: 'parents', to: 'students' },
+                    { from: 'students', to: 'invoices' },
+                    { from: 'students', to: 'attendance' },
+                    { from: 'classes', to: 'homework' }
+                ];
+
+                const draggingTable = ref(null);
+                const selectedTable = ref(null);
+                const offset = { x: 0, y: 0 };
+
+                const startDrag = (e, table) => {
+                    draggingTable.value = table;
+                    offset.x = e.clientX - table.x;
+                    offset.y = e.clientY - table.y;
+                    e.preventDefault();
+                };
+
+                const onMouseMove = (e) => {
+                    if (draggingTable.value) {
+                        draggingTable.value.x = e.clientX - offset.x;
+                        draggingTable.value.y = e.clientY - offset.y;
+                    }
+                };
+
+                const endMove = () => {
+                    draggingTable.value = null;
+                };
+
+                const calculatePath = (link) => {
+                    const from = tables.value.find(t => t.id === link.from);
+                    const to = tables.value.find(t => t.id === link.to);
+                    if (!from || !to) return '';
+                    const fX = from.x + 120, fY = from.y + 70;
+                    const tX = to.x + 120, tY = to.y + 70;
+                    const midX = (fX + tX) / 2, midY = (fY + tY) / 2;
+                    return 'M ' + fX + ' ' + fY + ' Q ' + midX + ' ' + fY + ' ' + midX + ' ' + midY + ' T ' + tX + ' ' + tY;
+                };
+
+                return {
+                    tables,
+                    connections,
+                    draggingTable,
+                    selectedTable,
+                    startDrag,
+                    onMouseMove,
+                    endMove,
+                    calculatePath
+                };
+            },
+            template: `
+                <div class="w-full h-full relative" @mousemove="onMouseMove" @mouseup="endMove" @mouseleave="endMove">
+                    <svg class="connector-layer" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 5;">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+                            </marker>
+                        </defs>
+                        <path v-for="link in connections" :key="link.from + '-' + link.to"
+                              :d="calculatePath(link)"
+                              stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+                    </svg>
+
+                    <div v-for="table in tables" :key="table.id"
+                         class="table-node"
+                         :class="{ selected: selectedTable && selectedTable.id === table.id }"
+                         :style="{ transform: 'translate(' + table.x + 'px, ' + table.y + 'px)', borderColor: table.color }"
+                         @mousedown.stop="startDrag(\$event, table)"
+                         @click.stop="selectedTable = table">
+                        <div class="px-4 py-3 rounded-t-[10px] flex items-center gap-2 text-white" :style="{ backgroundColor: table.color }">
+                            <span class="text-lg">{{ table.icon }}</span>
+                            <span class="font-bold text-sm uppercase tracking-wider">{{ table.name }}</span>
+                        </div>
+                        <div class="py-2">
+                            <div v-for="field in table.fields" :key="field.name" class="field-row">
+                                <div class="flex items-center gap-1">
+                                    <span v-if="field.pk">🔑</span>
+                                    <span v-if="field.fk">🔗</span>
+                                    <span :class="{'font-bold text-slate-700': field.pk || field.fk, 'text-slate-600': !field.pk && !field.fk}">{{ field.name }}</span>
+                                </div>
+                                <span class="text-slate-400 italic text-[10px]">{{ field.type }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <transition name="fade">
+                        <div v-if="selectedTable" class="detail-inspector">
+                            <div class="flex justify-between items-start mb-4">
+                                <h2 class="text-lg font-bold text-slate-800">{{ selectedTable.name }}</h2>
+                                <button @click="selectedTable = null" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-sm text-slate-600 leading-relaxed">{{ selectedTable.description }}</p>
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-2">Primary Operations</h3>
+                                    <ul class="text-xs text-slate-700 space-y-1">
+                                        <li v-for="op in selectedTable.ops" :key="op">• {{ op }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>
+                </div>
+            `
+        }).mount('#erd-app');
     </script>
 </body>
 </html>
