@@ -91,6 +91,19 @@
             font-family: 'Courier New', monospace;
             color: #1E40AF;
             font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .col-name:hover {
+            text-decoration: underline;
+            color: #0EA5E9;
+        }
+        .col-name.highlighted {
+            background-color: #FEF08A;
+            padding: 2px 4px;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
         }
         .col-type {
             font-family: 'Courier New', monospace;
@@ -123,6 +136,83 @@
         .service-communication { background-color: #DCFCE7; color: #065F46; }
         .service-user { background-color: #E9D5FF; color: #581C87; }
         .service-system { background-color: #F3F4F6; color: #374151; }
+
+        /* Tooltip Styles */
+        .column-tooltip {
+            position: fixed;
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 9999;
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3B82F6;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+        }
+        .tooltip-header {
+            font-weight: 700;
+            color: #60A5FA;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .tooltip-header-content {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tooltip-count {
+            display: inline-block;
+            background-color: #3B82F6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .tooltip-close {
+            cursor: pointer;
+            color: #9CA3AF;
+            font-size: 16px;
+            line-height: 1;
+            transition: color 0.2s ease;
+            user-select: none;
+        }
+        .tooltip-close:hover {
+            color: #EF4444;
+        }
+        .tooltip-usage {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .tooltip-item {
+            padding: 6px 8px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 2px solid #3B82F6;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+        .tooltip-item-table {
+            color: #60A5FA;
+            font-weight: 600;
+        }
+        .tooltip-item-role {
+            color: #86EFAC;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        .tooltip-locked {
+            border: 2px solid #10B981 !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -695,12 +785,159 @@
             return card;
         }
 
+        // Build column usage map
+        function buildColumnUsageMap() {
+            const columnUsage = {};
+
+            Object.entries(dbSchema).forEach(([tableName, tableInfo]) => {
+                tableInfo.columns.forEach(col => {
+                    if (!columnUsage[col.name]) {
+                        columnUsage[col.name] = [];
+                    }
+                    columnUsage[col.name].push({
+                        table: tableName,
+                        constraints: col.constraints,
+                        type: col.type
+                    });
+                });
+            });
+
+            return columnUsage;
+        }
+
+        let columnUsageMap = buildColumnUsageMap();
+
+        // Tooltip management
+        let currentTooltip = null;
+        let lockedColumn = null;
+
+        function createTooltip(colName, usageList) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'column-tooltip';
+
+            const count = usageList.length;
+            let header = `<div class="tooltip-header">
+                <div class="tooltip-header-content">
+                    <span>🔗 ${colName}</span>
+                    <span class="tooltip-count">${count} table${count !== 1 ? 's' : ''}</span>
+                </div>
+                <span class="tooltip-close" data-col="${colName}">✕</span>
+            </div>`;
+
+            let usage = '<div class="tooltip-usage">';
+            usageList.forEach(item => {
+                const roleClass = item.constraints.includes('PK') ? 'PK (Primary Key)' :
+                                item.constraints.includes('FK') ? 'FK (Foreign Key)' :
+                                item.constraints.includes('UK') ? 'UK (Unique Key)' : 'Regular Column';
+                usage += `<div class="tooltip-item">
+                    <div class="tooltip-item-table">${item.table}</div>
+                    <div class="tooltip-item-role">${roleClass}</div>
+                </div>`;
+            });
+            usage += '</div>';
+
+            tooltip.innerHTML = header + usage;
+
+            // Close button event listener
+            tooltip.querySelector('.tooltip-close').addEventListener('click', hideTooltip);
+
+            return tooltip;
+        }
+
+        function showTooltip(event, colName) {
+            event.stopPropagation();
+
+            const usageList = columnUsageMap[colName];
+            if (!usageList || usageList.length <= 1) return; // Only show for columns used in multiple tables
+
+            // If clicking the same column, toggle off
+            if (lockedColumn === colName) {
+                hideTooltip();
+                return;
+            }
+
+            // Remove previous tooltip
+            if (currentTooltip) {
+                currentTooltip.remove();
+            }
+
+            const tooltip = createTooltip(colName, usageList);
+            document.body.appendChild(tooltip);
+            currentTooltip = tooltip;
+            lockedColumn = colName;
+
+            // Add green border to indicate locked state
+            tooltip.classList.add('tooltip-locked');
+
+            // Position tooltip
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+
+            // Adjust if tooltip goes off-screen
+            if (tooltip.offsetLeft < 10) {
+                tooltip.style.left = '10px';
+            }
+            if (tooltip.offsetLeft + tooltip.offsetWidth > window.innerWidth - 10) {
+                tooltip.style.left = (window.innerWidth - tooltip.offsetWidth - 10) + 'px';
+            }
+
+            // Highlight all instances of this column
+            document.querySelectorAll('.col-name').forEach(el => {
+                if (el.textContent === colName) {
+                    el.classList.add('highlighted');
+                }
+            });
+        }
+
+        function hideTooltip() {
+            if (currentTooltip) {
+                currentTooltip.remove();
+                currentTooltip = null;
+            }
+            lockedColumn = null;
+            document.querySelectorAll('.col-name.highlighted').forEach(el => {
+                el.classList.remove('highlighted');
+            });
+        }
+
+        // Add event listeners after rendering
+        function addColumnEventListeners() {
+            document.querySelectorAll('.col-name').forEach(colElement => {
+                const colName = colElement.textContent;
+                const usageCount = columnUsageMap[colName]?.length || 0;
+
+                if (usageCount > 1) {
+                    colElement.style.cursor = 'pointer';
+                    colElement.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showTooltip(e, colName);
+                    });
+                }
+            });
+        }
+
+        // Close tooltip when clicking outside
+        document.addEventListener('click', function(e) {
+            if (currentTooltip && !currentTooltip.contains(e.target) && !e.target.classList.contains('col-name')) {
+                hideTooltip();
+            }
+        });
+
         // Initialize database schema on page load
         document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('schemaContainer')) {
                 filterDBTables('all');
+                setTimeout(addColumnEventListeners, 100);
             }
         });
+
+        // Reinitialize listeners when tables are filtered
+        const originalFilterDBTables = filterDBTables;
+        filterDBTables = function(service) {
+            originalFilterDBTables.call(this, service);
+            setTimeout(addColumnEventListeners, 100);
+        };
     </script>
 </body>
 </html>
